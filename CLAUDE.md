@@ -2,7 +2,7 @@
 
 Guidance for working in this repository: **IMML**, a declarative language for Bittensor incentive
 mechanisms (a versioned JSON Schema / IR, a textual surface + grammar, lift/compile/format/generate
-tooling, a metric ontology, a 189-subnet corpus, and a Qt-style docs site).
+tooling, a metric ontology, a 189-subnet corpus, and a Qt-styled, Diátaxis-structured docs site).
 
 **Start here:** the repo-scoped skills capture the workflows and invariants —
 - **`imml-dev`** — extend the language (schema/grammar/ontology/generator/tooling); the hard invariants
@@ -29,7 +29,7 @@ Also read `spec/04-imml-language.md` (the language) and `spec/05-imml-style.md` 
 ./.venv/bin/python tooling/validate.py instances/ templates/blank-instance.yaml   # 190/190 valid
 ./.venv/bin/python tooling/coverage.py instances/                                  # PASS (100% fidelity, 95.8% structural)
 ./.venv/bin/python tooling/generate.py --check instances/                          # 53/53
-./.venv/bin/mkdocs build --strict                                                  # docs clean (~205 pages)
+./.venv/bin/mkdocs build --strict                                                  # docs clean (~221 pages)
 ```
 A pre-commit hook (`tooling/pre-commit.sh`) enforces `validate.py` on any `instances|schema|templates`
 change; a commit-msg hook (`tooling/commit-msg.sh`) enforces [Conventional Commits](https://www.conventionalcommits.org/)
@@ -78,7 +78,20 @@ Phases complete and committed (see `docs/understand/pipeline.md` — "The full p
     effective layer captures it. Trust the effective Gini; the scoring-layer Gini is the within-miner signal.**
 - **Research** — `reports/metric-language-research.md`: adversarially-verified, primary-sourced — the tail
   is a compressibility/MDL question, not impossibility.
-- **Process** — Conventional Commits enforced (commit-msg hook + CI); one commit per task.
+- **Documentation (zero-to-hero, Diátaxis)** — overhauled and live at the URL below. The reader spine, all
+  hand-written natively in `docs/` on the existing Material/snippets/mermaid infra (nav in `docs/SUMMARY.md`):
+  `learn/` (Why IMML, a visual **mental-model**, a 7-step hands-on **tutorial** that designs → compiles →
+  generates → simulates a fresh example — verified end-to-end against the tooling), `reference/glossary.md`,
+  task-oriented `guides/` how-tos (author/read/extract/generate/simulate), and `understand/` (the old dense
+  `pipeline.md` split into full-picture / metric-hole / simulator / theory). The 189-example gallery is now
+  indexed by **use case** via `vocab/use-case-tags.yaml` (a governed, hand-curated map — seeded by a keyword
+  heuristic then corrected; `docs/gen/build.py` reads it for the column + grouped nav; refine an assignment
+  there if a subnet looks mis-binned). The simulator suite stays OUT of the published site (per-subnet
+  "gameable" verdicts are sensitive). Tutorial/snippet sources live in `docs/_snippets/` (excluded from the
+  build via `mkdocs.yml` `exclude_docs`). Deploy is automatic on push to `main` (`.github/workflows/docs.yml`
+  → mike → gh-pages, versioned by schema VERSION).
+- **Process** — Conventional Commits enforced (commit-msg hook + CI), subjects ≤72 chars (now a hard fail);
+  one commit per task.
 
 QML-faithful coding conventions + `imml-fmt`; docs live at https://roykollensvendsen.github.io/imml/. This
 repo is the source of truth; referenced as the `incentive-schema` submodule in `~/mining/sn109`.
@@ -105,6 +118,9 @@ repo is the source of truth; referenced as the `incentive-schema` submodule in `
 5. Full-subnet description — extend the IR to facets (chain_config/architecture/economics/health).
    `bittensor` is now installed and finney is reachable (`tooling/chain.py` is the adapter), so chain
    facets are now buildable.
+6. CI hygiene — bump `actions/checkout@v4` → `@v5` and `actions/setup-python@v5` → `@v6` in
+   `.github/workflows/{docs,commitlint}.yml` (GitHub deprecated Node 20 for actions as of 2026-06-16;
+   they still run forced onto Node 24, but the action versions should be updated). Low priority.
 
 Re-running bulk extraction needs the `academia-archives` corpus (not vendored): set
 `ARCHIVES=/path/to/academia-archives/repos` for `tooling/list-pending.sh`. The `extract-corpus` workflow
