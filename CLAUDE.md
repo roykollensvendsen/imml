@@ -50,7 +50,10 @@ Phases complete and committed (see `docs/understand/pipeline.md` — "The full p
   Wired into the surface as `Metric { spec: "…" }`, validated at compile, stored in the `extensions` hatch
   (no schema field yet — accumulating ≥2× evidence). Spec: `spec/06-metric-spec-language.md`.
 - **Dataflow diagrams** — `tooling/graph.py` (mechanism) + `metric_spec.to_mermaid` (spec) → Mermaid, live
-  on each example page's Dataflow tab.
+  on each example page's Dataflow tab. A **visual vocabulary** (shape = role, colour = layer): the metric is
+  a purple double-box (the hole) — solid when it resolves to a known family, dashed when bespoke
+  (`extern`/`other`); aggregate/smooth/publish share one teal pipeline layer; inputs blue, `@overlays` a
+  yellow hexagon, on-chain weights green. Legend in `docs/learn/mental-model.md`; verified light + dark.
 - **Incentive simulator (chain-grounded, validated)** — a suite, NOT published to the docs site
   (per-subnet "gameable" verdicts are reputationally sensitive). Optional deps in
   `tooling/requirements-sim.txt` (cadCAD + bittensor, now installed in `.venv`).
@@ -138,6 +141,16 @@ repo is the source of truth; referenced as the `incentive-schema` submodule in `
 6. CI hygiene — bump `actions/checkout@v4` → `@v5` and `actions/setup-python@v5` → `@v6` in
    `.github/workflows/{docs,commitlint}.yml` (GitHub deprecated Node 20 for actions as of 2026-06-16;
    they still run forced onto Node 24, but the action versions should be updated). Low priority.
+7. **Graph the metric's internals (active thread — do this next).** Today `graph.py` expands a metric into
+   its sub-dataflow only when the signal carries an authored `extensions.spec`, and **0 corpus signals do**,
+   so in the gallery the metric is always an opaque box. But `vocab/metric-kind-specs.yaml` (20 kinds) +
+   `metric-tail-specs.yaml` (75 raws) hold specs the simulator already resolves (`simulate._signal_spec`:
+   `extensions` → tail → kind). Wire `graph.py` to resolve from vocab too (not just `extensions`) and open
+   the hole into its sub-graph via the existing `metric_spec.to_mermaid` — lights up the metric for the 20
+   kinds + ~85% of the tail. Most specs are shallow (~0.7 generators) so the sub-graphs are small, but even
+   `rate(submission.correct)` beats a bare `accuracy` label. Plan: before/after on a shallow + a composite
+   metric before rolling out to all 189. (Minor side-question: give the abstract anatomy diagram in
+   `mental-model.md` a light colour hint too, or keep it deliberately abstract.)
 
 Re-running bulk extraction needs the `academia-archives` corpus (not vendored): set
 `ARCHIVES=/path/to/academia-archives/repos` for `tooling/list-pending.sh`. The `extract-corpus` workflow
