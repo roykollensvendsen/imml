@@ -616,6 +616,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#reading-the-dataflow-diagrams" class="md-nav__link">
+    <span class="md-ellipsis">
+      Reading the dataflow diagrams
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#which-path-are-you-on" class="md-nav__link">
     <span class="md-ellipsis">
       Which path are you on?
@@ -6580,6 +6589,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#reading-the-dataflow-diagrams" class="md-nav__link">
+    <span class="md-ellipsis">
+      Reading the dataflow diagrams
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#which-path-are-you-on" class="md-nav__link">
     <span class="md-ellipsis">
       Which path are you on?
@@ -6664,11 +6682,15 @@ shapes, and <strong>89% of real subnets are the first one</strong>:</p>
 </ul>
 <p>The <code>pipeline</code> is four stages in order. Inputs enter at the left; on-chain weights leave at the right:</p>
 <pre class="mermaid"><code>flowchart LR
-    in["submission&lt;br/&gt;groundTruth&lt;br/&gt;task · peers"] --&gt; score["&lt;b&gt;score&lt;/b&gt;&lt;br/&gt;the metric&lt;br/&gt;(the hole)"]
-    score --&gt; agg["&lt;b&gt;aggregate&lt;/b&gt;&lt;br/&gt;combine miners"]
-    agg --&gt; smooth["&lt;b&gt;smooth&lt;/b&gt;&lt;br/&gt;across rounds"]
-    smooth --&gt; pub["&lt;b&gt;publish&lt;/b&gt;&lt;br/&gt;to chain"]
-    pub --&gt; w["on-chain&lt;br/&gt;weights"]</code></pre>
+    in(["submission&lt;br/&gt;groundTruth&lt;br/&gt;task · peers"]):::in --&gt; score[["&lt;b&gt;score&lt;/b&gt;&lt;br/&gt;the metric (the hole)"]]:::hole
+    score --&gt; agg["&lt;b&gt;aggregate&lt;/b&gt;&lt;br/&gt;combine miners"]:::stage
+    agg --&gt; smooth["&lt;b&gt;smooth&lt;/b&gt;&lt;br/&gt;across rounds"]:::stage
+    smooth --&gt; pub["&lt;b&gt;publish&lt;/b&gt;&lt;br/&gt;to chain"]:::stage
+    pub --&gt; w(["on-chain&lt;br/&gt;weights"]):::out
+    classDef in fill:#e6f0ff,stroke:#4488cc,color:#102a43;
+    classDef hole fill:#efe3ff,stroke:#7a3cc8,stroke-width:3px,color:#2a1a4a;
+    classDef stage fill:#e3f6f3,stroke:#2a9d8f,color:#0b3b35;
+    classDef out fill:#e6ffe6,stroke:#3a3,color:#0a3a0a;</code></pre>
 <table>
 <thead>
 <tr>
@@ -6715,6 +6737,29 @@ rather than pretending it generalizes. That single idea is the <a href="../why/"
 <li><strong><code>@burn</code></strong> — sends a fraction of emission to nobody (burns it) instead of paying miners.</li>
 <li><strong><code>@state</code></strong> — per-miner memory the mechanism carries between rounds.</li>
 </ul>
+<h2 id="reading-the-dataflow-diagrams">Reading the dataflow diagrams<a class="headerlink" href="#reading-the-dataflow-diagrams" title="Permanent link">&para;</a></h2>
+<p>Every one of the 189 <a href="../../examples/">example</a> pages shows its mechanism as a <strong>dataflow diagram</strong> —
+inputs at the top, on-chain weights at the bottom. They all use the same small visual vocabulary, where
+<strong>shape tells you the role</strong> and <strong>colour tells you the layer</strong>:</p>
+<pre class="mermaid"><code>flowchart LR
+    I(["input"]):::in
+    H[["the metric — the hole"]]:::hole
+    X[["extern / bespoke (dashed)"]]:::holex
+    P["pipeline stage&lt;br/&gt;aggregate · smooth · publish"]:::stage
+    V{{"@overlay&lt;br/&gt;guards · burn"}}:::ov
+    O(["weights on-chain"]):::out
+    S(["@state"]):::note
+    classDef in fill:#e6f0ff,stroke:#4488cc,color:#102a43;
+    classDef hole fill:#efe3ff,stroke:#7a3cc8,stroke-width:3px,color:#2a1a4a;
+    classDef holex fill:#efe3ff,stroke:#7a3cc8,stroke-width:3px,stroke-dasharray:5 3,color:#2a1a4a;
+    classDef stage fill:#e3f6f3,stroke:#2a9d8f,color:#0b3b35;
+    classDef ov fill:#fff3d6,stroke:#c9a227,color:#5c4a00;
+    classDef out fill:#e6ffe6,stroke:#3a3,color:#0a3a0a;
+    classDef note fill:#f3f3f3,stroke:#bbb,color:#333;</code></pre>
+<p>The <strong>metric</strong> gets the signature purple double-box, because it's the one bespoke part — the
+<a href="../why/">hole</a>. When a metric resolves to a known family it's solid; when it's an
+<a href="../../reference/glossary/"><code>extern</code></a> (or <code>other</code>) bespoke leaf it's drawn dashed. Learn these once and you
+can read any subnet in the gallery at a glance.</p>
 <h2 id="which-path-are-you-on">Which path are you on?<a class="headerlink" href="#which-path-are-you-on" title="Permanent link">&para;</a></h2>
 <p>IMML serves three different jobs. Pick the one that matches what you're doing:</p>
 <pre class="mermaid"><code>flowchart TD

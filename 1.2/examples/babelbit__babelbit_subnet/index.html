@@ -6571,13 +6571,13 @@
   SUB(["submission"]):::in
   GT(["groundTruth: DeterministicDataset, ReferenceModel"]):::in
   G{{"@guards: StakeWeighting, DeterministicCheck"}}:::ov
-  M0["Metric: similarity"]
-  M1["Metric: similarity"]
-  M2["Metric: latency"]
-  AGG["aggregate: Proportional"]
-  SM["smooth: Other"]
+  M0[["the metric: similarity"]]:::hole
+  M1[["the metric: similarity"]]:::hole
+  M2[["the metric: latency"]]:::hole
+  AGG["aggregate: Proportional"]:::stage
+  SM["smooth: Other"]:::stage
   BURN{{"@burn: redirect a fraction"}}:::ov
-  PUB["publish: SetWeights"]
+  PUB["publish: SetWeights"]:::stage
   OUT(["weights on-chain = final score"]):::out
   ST(["@state: carried across rounds"]):::note
   SUB --&gt; G
@@ -6595,10 +6595,13 @@
   BURN --&gt; PUB
   PUB --&gt; OUT
   ST --&gt; AGG
-  classDef in fill:#e6f0ff,stroke:#5b8;
-  classDef out fill:#e6ffe6,stroke:#3a3;
-  classDef ov fill:#fff3d6,stroke:#caa;
-  classDef note fill:#f3f3f3,stroke:#bbb;</code></pre>
+  classDef in fill:#e6f0ff,stroke:#4488cc,color:#102a43;
+  classDef hole fill:#efe3ff,stroke:#7a3cc8,stroke-width:3px,color:#2a1a4a;
+  classDef holex fill:#efe3ff,stroke:#7a3cc8,stroke-width:3px,stroke-dasharray:5 3,color:#2a1a4a;
+  classDef stage fill:#e3f6f3,stroke:#2a9d8f,color:#0b3b35;
+  classDef ov fill:#fff3d6,stroke:#c9a227,color:#5c4a00;
+  classDef out fill:#e6ffe6,stroke:#3a3,color:#0a3a0a;
+  classDef note fill:#f3f3f3,stroke:#bbb,color:#333;</code></pre>
 </div>
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>Mechanism {
