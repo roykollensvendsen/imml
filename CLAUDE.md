@@ -60,9 +60,24 @@ Phases complete and committed (see `docs/understand/pipeline.md` — "The full p
   `metric_spec.to_mermaid`. The dashed/solid distinction stays honest about bespoke-ness (independent of
   whether a spec resolves: a tail metric is dashed even with its sub-graph drawn). Bare `submission.x`
   projections are NOT expanded (the box label already names them); anything with a call or binop is.
-  Corpus-wide: **367 metric sub-graphs now drawn across 127/171 subnets (was 0), 0 crashes**, and the
+  Corpus-wide: **361 metric sub-graphs now drawn across 123/171 subnets (was 0), 0 crashes**, and the
   built site carries them. (Open side-question: give the abstract anatomy diagram in `mental-model.md` a
   light colour hint, or keep it deliberately abstract.)
+  **The scoring topology is graphical too, not just the hole.** `graph.py` branches on `composition.shape`
+  so each of the five combinators renders structurally distinctly instead of one flat metric→AGG fan-in:
+  `pipeline` = linear fan-in to a rectangular aggregate; `multiplex` = a *split* trapezoid (labelled by
+  `sub_competitions.structure` + count) → N parallel tracks → a *combine* trapezoid; `gated` = a
+  `{pass/fail?}` diamond on the aggregated magnitude (pass → publish, fail → a red `0, no reward` sink), the
+  gate named after the gating signal (keyword-matched, else generic); `multiplicative` = an explicit `(×)`
+  product circle (penalty/multiplier edges marked `×`, split from the base by signal-name heuristic);
+  `opaque` = a single honest black box (no invented metric holes — which is why the sub-graph count dropped
+  367→361 / 127→123: exactly the opaque cases that stopped faking a pipeline). The metric-hole rendering is
+  a shared `metric_node` helper reused by every branch, so the hole expansion above is unchanged; only the
+  downstream wiring differs. Combinators stay in the teal scoring layer (shape carries the role); legend in
+  `docs/learn/mental-model.md` documents all five. Verified: 0 crashes / 171, all five render through the
+  real mermaid engine (`mmdc`) and are pairwise-distinct, built site carries them (`× product`×9,
+  `opaque mechanism`×14, `fail → 0`×17). This was the `/goal` scoped to the graph (not backlog #1's
+  grammar-side `multiplex` track/combine reconciliation, which is still open).
 - **Incentive simulator (chain-grounded, validated)** — a suite, NOT published to the docs site
   (per-subnet "gameable" verdicts are reputationally sensitive). Optional deps in
   `tooling/requirements-sim.txt` (cadCAD + bittensor, now installed in `.venv`).
