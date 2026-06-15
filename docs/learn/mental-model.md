@@ -35,11 +35,15 @@ The `pipeline` is four stages in order. Inputs enter at the left; on-chain weigh
 
 ```mermaid
 flowchart LR
-    in["submission<br/>groundTruth<br/>task · peers"] --> score["<b>score</b><br/>the metric<br/>(the hole)"]
-    score --> agg["<b>aggregate</b><br/>combine miners"]
-    agg --> smooth["<b>smooth</b><br/>across rounds"]
-    smooth --> pub["<b>publish</b><br/>to chain"]
-    pub --> w["on-chain<br/>weights"]
+    in(["submission<br/>groundTruth<br/>task · peers"]):::in --> score[["<b>score</b><br/>the metric (the hole)"]]:::hole
+    score --> agg["<b>aggregate</b><br/>combine miners"]:::stage
+    agg --> smooth["<b>smooth</b><br/>across rounds"]:::stage
+    smooth --> pub["<b>publish</b><br/>to chain"]:::stage
+    pub --> w(["on-chain<br/>weights"]):::out
+    classDef in fill:#e6f0ff,stroke:#4488cc,color:#102a43;
+    classDef hole fill:#efe3ff,stroke:#7a3cc8,stroke-width:3px,color:#2a1a4a;
+    classDef stage fill:#e3f6f3,stroke:#2a9d8f,color:#0b3b35;
+    classDef out fill:#e6ffe6,stroke:#3a3,color:#0a3a0a;
 ```
 
 | stage | the question it answers | examples |
@@ -63,6 +67,35 @@ Overlays wrap the combinator and change the whole thing at once:
   reject, penalize, or barrier a submission.
 - **`@burn`** — sends a fraction of emission to nobody (burns it) instead of paying miners.
 - **`@state`** — per-miner memory the mechanism carries between rounds.
+
+## Reading the dataflow diagrams
+
+Every one of the 189 [example](../examples/index.md) pages shows its mechanism as a **dataflow diagram** —
+inputs at the top, on-chain weights at the bottom. They all use the same small visual vocabulary, where
+**shape tells you the role** and **colour tells you the layer**:
+
+```mermaid
+flowchart LR
+    I(["input"]):::in
+    H[["the metric — the hole"]]:::hole
+    X[["extern / bespoke (dashed)"]]:::holex
+    P["pipeline stage<br/>aggregate · smooth · publish"]:::stage
+    V{{"@overlay<br/>guards · burn"}}:::ov
+    O(["weights on-chain"]):::out
+    S(["@state"]):::note
+    classDef in fill:#e6f0ff,stroke:#4488cc,color:#102a43;
+    classDef hole fill:#efe3ff,stroke:#7a3cc8,stroke-width:3px,color:#2a1a4a;
+    classDef holex fill:#efe3ff,stroke:#7a3cc8,stroke-width:3px,stroke-dasharray:5 3,color:#2a1a4a;
+    classDef stage fill:#e3f6f3,stroke:#2a9d8f,color:#0b3b35;
+    classDef ov fill:#fff3d6,stroke:#c9a227,color:#5c4a00;
+    classDef out fill:#e6ffe6,stroke:#3a3,color:#0a3a0a;
+    classDef note fill:#f3f3f3,stroke:#bbb,color:#333;
+```
+
+The **metric** gets the signature purple double-box, because it's the one bespoke part — the
+[hole](why.md). When a metric resolves to a known family it's solid; when it's an
+[`extern`](../reference/glossary.md) (or `other`) bespoke leaf it's drawn dashed. Learn these once and you
+can read any subnet in the gallery at a glance.
 
 ## Which path are you on?
 

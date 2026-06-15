@@ -56,7 +56,15 @@ def mechanism_mermaid(ir: dict) -> str:
         mid = f"M{i}"
         fam = s.get("metric_family") or s.get("metric_kind") or "other"
         spec = (s.get("extensions") or {}).get("spec")
-        L.append(f'  {mid}["Metric: {_lbl(fam)}"]')
+        # the metric is the typed hole — draw it with the signature shape. When it resolves to a known
+        # family/kind (or carries a spec) it's solid; when it's the bespoke escape hatch (`extern` leaf, or
+        # the `other` tail with no spec) it's the same hole drawn dashed.
+        bespoke = s.get("extern") or (fam == "other" and not spec)
+        if bespoke:
+            desc = _lbl(s.get("metric_kind_other") or ("extern" if s.get("extern") else "other"))
+            L.append(f'  {mid}[["the metric: {desc[:44]}"]]:::holex')
+        else:
+            L.append(f'  {mid}[["the metric: {_lbl(fam)}"]]:::hole')
         E.append((src, mid))
         if gts:
             E.append(("GT", mid))
@@ -74,19 +82,19 @@ def mechanism_mermaid(ir: dict) -> str:
         metric_ids = [src]                        # degenerate: no metric -> flow straight through
 
     # --- aggregate -> smooth -> burn -> publish -> out (bottom) ---
-    L.append(f'  AGG["aggregate: {_lbl(_pascal(agg.get("method") or "proportional"))}"]')
+    L.append(f'  AGG["aggregate: {_lbl(_pascal(agg.get("method") or "proportional"))}"]:::stage')
     for m in metric_ids:
         E.append((m, "AGG"))
     last = "AGG"
     if sm and (sm.get("kind") or "none") != "none":
-        L.append(f'  SM["smooth: {_lbl(_pascal(sm.get("kind")))}"]')
+        L.append(f'  SM["smooth: {_lbl(_pascal(sm.get("kind")))}"]:::stage')
         E.append((last, "SM"))
         last = "SM"
     if "burn" in overlays and burn:
         L.append('  BURN{{"@burn: redirect a fraction"}}:::ov')
         E.append((last, "BURN"))
         last = "BURN"
-    L.append(f'  PUB["publish: {_lbl(_pascal(ws.get("on_chain_call") or "set_weights"))}"]')
+    L.append(f'  PUB["publish: {_lbl(_pascal(ws.get("on_chain_call") or "set_weights"))}"]:::stage')
     E.append((last, "PUB"))
     L.append('  OUT(["weights on-chain = final score"]):::out')
     E.append(("PUB", "OUT"))
@@ -95,10 +103,16 @@ def mechanism_mermaid(ir: dict) -> str:
         E.append(("ST", "AGG"))
 
     L += [f"  {a} --> {b}" for a, b in E]
-    L += ["  classDef in fill:#e6f0ff,stroke:#5b8;",
-          "  classDef out fill:#e6ffe6,stroke:#3a3;",
-          "  classDef ov fill:#fff3d6,stroke:#caa;",
-          "  classDef note fill:#f3f3f3,stroke:#bbb;"]
+    # visual vocabulary (shape = role, colour = layer; mirrored in docs/learn/mental-model.md's legend):
+    #   in = inputs · hole/holex = the metric (resolved / extern) · stage = the scoring pipeline ·
+    #   ov = overlays · out = on-chain weights · note = @state
+    L += ["  classDef in fill:#e6f0ff,stroke:#4488cc,color:#102a43;",
+          "  classDef hole fill:#efe3ff,stroke:#7a3cc8,stroke-width:3px,color:#2a1a4a;",
+          "  classDef holex fill:#efe3ff,stroke:#7a3cc8,stroke-width:3px,stroke-dasharray:5 3,color:#2a1a4a;",
+          "  classDef stage fill:#e3f6f3,stroke:#2a9d8f,color:#0b3b35;",
+          "  classDef ov fill:#fff3d6,stroke:#c9a227,color:#5c4a00;",
+          "  classDef out fill:#e6ffe6,stroke:#3a3,color:#0a3a0a;",
+          "  classDef note fill:#f3f3f3,stroke:#bbb,color:#333;"]
     return "\n".join(L)
 
 
