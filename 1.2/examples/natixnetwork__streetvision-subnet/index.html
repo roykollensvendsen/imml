@@ -6572,8 +6572,23 @@
   GT(["groundTruth: DeterministicDataset"]):::in
   G{{"@guards: DeterministicCheck, Other, StakeWeighting"}}:::ov
   M0[["the metric: accuracy"]]:::hole
+  subgraph sg0 ["spec: rate(submission.correct)"]
+    m0_s1(["submission.correct"]):::src
+    m0_s2["rate"]
+    m0_s1 --&gt; m0_s2
+  end
   M1[["the metric: accuracy"]]:::hole
+  subgraph sg1 ["spec: rate(submission.correct)"]
+    m1_s1(["submission.correct"]):::src
+    m1_s2["rate"]
+    m1_s1 --&gt; m1_s2
+  end
   M2[["the metric: validity_gate"]]:::holex
+  subgraph sg2 ["spec: gate(submission.valid)"]
+    m2_s1(["submission.valid"]):::src
+    m2_s2["gate"]
+    m2_s1 --&gt; m2_s2
+  end
   AGG["aggregate: ExponentialDecayEma"]:::stage
   SM["smooth: Ema"]:::stage
   BURN{{"@burn: redirect a fraction"}}:::ov
@@ -6583,10 +6598,13 @@
   SUB --&gt; G
   G --&gt; M0
   GT --&gt; M0
+  m0_s2 --&gt; M0
   G --&gt; M1
   GT --&gt; M1
+  m1_s2 --&gt; M1
   G --&gt; M2
   GT --&gt; M2
+  m2_s2 --&gt; M2
   M0 --&gt; AGG
   M1 --&gt; AGG
   M2 --&gt; AGG

@@ -6572,6 +6572,13 @@
   GT(["groundTruth: MarketData"]):::in
   G{{"@guards: RiskLimit, LivenessCheck, RateLimit"}}:::ov
   M0[["the metric: risk_adjusted_ratio"]]:::hole
+  subgraph sg0 ["spec: submission.excess_return / submission.volatility"]
+    m0_s1(["submission.excess_return"]):::src
+    m0_s2["/"]
+    m0_s3(["submission.volatility"]):::src
+    m0_s1 --&gt; m0_s2
+    m0_s3 --&gt; m0_s2
+  end
   M1[["the metric: pnl"]]:::hole
   M2[["the metric: volume"]]:::hole
   M3[["the metric: pnl"]]:::hole
@@ -6583,6 +6590,7 @@
   SUB --&gt; G
   G --&gt; M0
   GT --&gt; M0
+  m0_s2 --&gt; M0
   G --&gt; M1
   GT --&gt; M1
   G --&gt; M2

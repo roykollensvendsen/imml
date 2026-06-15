@@ -6572,15 +6572,31 @@
   GT(["groundTruth: LlmJudgment, CommitReveal"]):::in
   G{{"@guards: CommitReveal, PlagiarismDetection"}}:::ov
   M0[["the metric: llm_judgment"]]:::hole
+  subgraph sg0 ["spec: similarity(submission.output, groundTruth.judge)"]
+    m0_s1(["submission.output"]):::src
+    m0_s2(["groundTruth.judge"]):::src
+    m0_s3["similarity"]
+    m0_s1 --&gt; m0_s3
+    m0_s2 --&gt; m0_s3
+  end
   M1[["the metric: similarity"]]:::hole
+  subgraph sg1 ["spec: similarity(submission.output, groundTruth.refere"]
+    m1_s1(["submission.output"]):::src
+    m1_s2(["groundTruth.reference"]):::src
+    m1_s3["similarity"]
+    m1_s1 --&gt; m1_s3
+    m1_s2 --&gt; m1_s3
+  end
   AGG["aggregate: Undocumented"]:::stage
   PUB["publish: SetWeights"]:::stage
   OUT(["weights on-chain = final score"]):::out
   SUB --&gt; G
   G --&gt; M0
   GT --&gt; M0
+  m0_s3 --&gt; M0
   G --&gt; M1
   GT --&gt; M1
+  m1_s3 --&gt; M1
   M0 --&gt; AGG
   M1 --&gt; AGG
   AGG --&gt; PUB

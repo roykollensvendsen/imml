@@ -6572,9 +6572,19 @@
   GT(["groundTruth: ReferenceModel, DeterministicDataset"]):::in
   G{{"@guards: HardwareValidation, Other, Collateral"}}:::ov
   M0[["the metric: loss"]]:::hole
+  subgraph sg0 ["spec: penalty(submission.loss)"]
+    m0_s1(["submission.loss"]):::src
+    m0_s2["penalty"]
+    m0_s1 --&gt; m0_s2
+  end
   M1[["the metric: grpo_reward"]]:::holex
   M2[["the metric: rl_environment_reward"]]:::holex
   M3[["the metric: loss"]]:::hole
+  subgraph sg3 ["spec: penalty(submission.loss)"]
+    m3_s1(["submission.loss"]):::src
+    m3_s2["penalty"]
+    m3_s1 --&gt; m3_s2
+  end
   AGG["aggregate: TournamentBracket"]:::stage
   BURN{{"@burn: redirect a fraction"}}:::ov
   PUB["publish: SetWeights"]:::stage
@@ -6583,12 +6593,14 @@
   SUB --&gt; G
   G --&gt; M0
   GT --&gt; M0
+  m0_s2 --&gt; M0
   G --&gt; M1
   GT --&gt; M1
   G --&gt; M2
   GT --&gt; M2
   G --&gt; M3
   GT --&gt; M3
+  m3_s2 --&gt; M3
   M0 --&gt; AGG
   M1 --&gt; AGG
   M2 --&gt; AGG

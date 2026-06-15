@@ -6572,6 +6572,17 @@
   GT(["groundTruth: Other, HardwareProbe"]):::in
   G{{"@guards: Other, Other, DeterministicCheck"}}:::ov
   M0[["the metric: Mean of the miner hotkey's on-chain incentiv"]]:::holex
+  subgraph sg0 ["spec: affine(mean(submission.cross_subnet_incentive), "]
+    m0_s1(["submission.cross_subnet_incentive"]):::src
+    m0_s2["mean"]
+    m0_s3(["100000"]):::src
+    m0_s4(["0"]):::src
+    m0_s5["affine"]
+    m0_s1 --&gt; m0_s2
+    m0_s2 --&gt; m0_s5
+    m0_s3 --&gt; m0_s5
+    m0_s4 --&gt; m0_s5
+  end
   M1[["the metric: uptime"]]:::hole
   AGG["aggregate: RankBased"]:::stage
   BURN{{"@burn: redirect a fraction"}}:::ov
@@ -6581,6 +6592,7 @@
   SUB --&gt; G
   G --&gt; M0
   GT --&gt; M0
+  m0_s5 --&gt; M0
   G --&gt; M1
   GT --&gt; M1
   M0 --&gt; AGG

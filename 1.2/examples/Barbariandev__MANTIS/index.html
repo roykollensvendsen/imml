@@ -6573,6 +6573,11 @@
   G{{"@guards: CommitReveal, Deduplication, RateLimit"}}:::ov
   M0[["the metric: predictive contribution (absolute meta-model"]]:::holex
   M1[["the metric: accuracy"]]:::hole
+  subgraph sg1 ["spec: rate(submission.correct)"]
+    m1_s1(["submission.correct"]):::src
+    m1_s2["rate"]
+    m1_s1 --&gt; m1_s2
+  end
   AGG["aggregate: ExponentialDecayEma"]:::stage
   BURN{{"@burn: redirect a fraction"}}:::ov
   PUB["publish: SetWeights"]:::stage
@@ -6583,6 +6588,7 @@
   GT --&gt; M0
   G --&gt; M1
   GT --&gt; M1
+  m1_s2 --&gt; M1
   M0 --&gt; AGG
   M1 --&gt; AGG
   AGG --&gt; BURN

@@ -6572,10 +6572,30 @@
   GT(["groundTruth: DeterministicDataset"]):::in
   G{{"@guards: LivenessCheck, RiskLimit, Deduplication"}}:::ov
   M0[["the metric: accuracy"]]:::hole
+  subgraph sg0 ["spec: rate(submission.correct)"]
+    m0_s1(["submission.correct"]):::src
+    m0_s2["rate"]
+    m0_s1 --&gt; m0_s2
+  end
   M1[["the metric: accuracy"]]:::hole
+  subgraph sg1 ["spec: rate(submission.correct)"]
+    m1_s1(["submission.correct"]):::src
+    m1_s2["rate"]
+    m1_s1 --&gt; m1_s2
+  end
   M2[["the metric: composite"]]:::hole
+  subgraph sg2 ["spec: mean(submission.components)"]
+    m2_s1(["submission.components"]):::src
+    m2_s2["mean"]
+    m2_s1 --&gt; m2_s2
+  end
   M3[["the metric: throughput"]]:::hole
   M4[["the metric: latency"]]:::hole
+  subgraph sg4 ["spec: penalty(submission.latency)"]
+    m4_s1(["submission.latency"]):::src
+    m4_s2["penalty"]
+    m4_s1 --&gt; m4_s2
+  end
   AGG["aggregate: Proportional"]:::stage
   SM["smooth: Ema"]:::stage
   BURN{{"@burn: redirect a fraction"}}:::ov
@@ -6585,14 +6605,18 @@
   SUB --&gt; G
   G --&gt; M0
   GT --&gt; M0
+  m0_s2 --&gt; M0
   G --&gt; M1
   GT --&gt; M1
+  m1_s2 --&gt; M1
   G --&gt; M2
   GT --&gt; M2
+  m2_s2 --&gt; M2
   G --&gt; M3
   GT --&gt; M3
   G --&gt; M4
   GT --&gt; M4
+  m4_s2 --&gt; M4
   M0 --&gt; AGG
   M1 --&gt; AGG
   M2 --&gt; AGG

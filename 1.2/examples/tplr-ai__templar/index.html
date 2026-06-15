@@ -6572,8 +6572,37 @@
   GT(["groundTruth: ReferenceModel"]):::in
   G{{"@guards: Deduplication, DeterministicCheck, LivenessCheck"}}:::ov
   M0[["the metric: loss"]]:::hole
+  subgraph sg0 ["spec: penalty(submission.loss)"]
+    m0_s1(["submission.loss"]):::src
+    m0_s2["penalty"]
+    m0_s1 --&gt; m0_s2
+  end
   M1[["the metric: binary overfitting indicator: +1 if relative"]]:::holex
+  subgraph sg1 ["spec: sign(error(submission, task.random) - error(subm"]
+    m1_s1(["submission"]):::src
+    m1_s2(["task.random"]):::src
+    m1_s3["error"]
+    m1_s4["-"]
+    m1_s5(["submission"]):::src
+    m1_s6(["task.own"]):::src
+    m1_s7["error"]
+    m1_s8["sign"]
+    m1_s1 --&gt; m1_s3
+    m1_s2 --&gt; m1_s3
+    m1_s3 --&gt; m1_s4
+    m1_s5 --&gt; m1_s7
+    m1_s6 --&gt; m1_s7
+    m1_s7 --&gt; m1_s4
+    m1_s4 --&gt; m1_s8
+  end
   M2[["the metric: similarity"]]:::hole
+  subgraph sg2 ["spec: similarity(submission.output, groundTruth.refere"]
+    m2_s1(["submission.output"]):::src
+    m2_s2(["groundTruth.reference"]):::src
+    m2_s3["similarity"]
+    m2_s1 --&gt; m2_s3
+    m2_s2 --&gt; m2_s3
+  end
   AGG["aggregate: RankBased"]:::stage
   SM["smooth: Ema"]:::stage
   BURN{{"@burn: redirect a fraction"}}:::ov
@@ -6583,10 +6612,13 @@
   SUB --&gt; G
   G --&gt; M0
   GT --&gt; M0
+  m0_s2 --&gt; M0
   G --&gt; M1
   GT --&gt; M1
+  m1_s8 --&gt; M1
   G --&gt; M2
   GT --&gt; M2
+  m2_s3 --&gt; M2
   M0 --&gt; AGG
   M1 --&gt; AGG
   M2 --&gt; AGG

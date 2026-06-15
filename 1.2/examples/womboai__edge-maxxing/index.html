@@ -6572,11 +6572,28 @@
   GT(["groundTruth: ReferenceModel, HardwareProbe"]):::in
   G{{"@guards: Deduplication, DeterministicCheck, StakeWeighting"}}:::ov
   M0[["the metric: similarity"]]:::hole
+  subgraph sg0 ["spec: similarity(submission.output, groundTruth.refere"]
+    m0_s1(["submission.output"]):::src
+    m0_s2(["groundTruth.reference"]):::src
+    m0_s3["similarity"]
+    m0_s1 --&gt; m0_s3
+    m0_s2 --&gt; m0_s3
+  end
   M1[["the metric: latency"]]:::hole
+  subgraph sg1 ["spec: penalty(submission.latency)"]
+    m1_s1(["submission.latency"]):::src
+    m1_s2["penalty"]
+    m1_s1 --&gt; m1_s2
+  end
   M2[["the metric: hardware_spec"]]:::hole
   M3[["the metric: hardware_spec"]]:::hole
   M4[["the metric: hardware_spec"]]:::hole
   M5[["the metric: latency"]]:::hole
+  subgraph sg5 ["spec: penalty(submission.latency)"]
+    m5_s1(["submission.latency"]):::src
+    m5_s2["penalty"]
+    m5_s1 --&gt; m5_s2
+  end
   M6[["the metric: hardware_spec"]]:::hole
   AGG["aggregate: Proportional"]:::stage
   PUB["publish: SetWeights"]:::stage
@@ -6584,8 +6601,10 @@
   SUB --&gt; G
   G --&gt; M0
   GT --&gt; M0
+  m0_s3 --&gt; M0
   G --&gt; M1
   GT --&gt; M1
+  m1_s2 --&gt; M1
   G --&gt; M2
   GT --&gt; M2
   G --&gt; M3
@@ -6594,6 +6613,7 @@
   GT --&gt; M4
   G --&gt; M5
   GT --&gt; M5
+  m5_s2 --&gt; M5
   G --&gt; M6
   GT --&gt; M6
   M0 --&gt; AGG

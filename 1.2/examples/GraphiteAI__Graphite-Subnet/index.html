@@ -6573,7 +6573,19 @@
   G{{"@guards: DeterministicCheck, Other, StakeWeighting"}}:::ov
   M0[["the metric: graph_optimization_objective_cost"]]:::holex
   M1[["the metric: similarity"]]:::hole
+  subgraph sg1 ["spec: similarity(submission.output, groundTruth.refere"]
+    m1_s1(["submission.output"]):::src
+    m1_s2(["groundTruth.reference"]):::src
+    m1_s3["similarity"]
+    m1_s1 --&gt; m1_s3
+    m1_s2 --&gt; m1_s3
+  end
   M2[["the metric: composite"]]:::hole
+  subgraph sg2 ["spec: mean(submission.components)"]
+    m2_s1(["submission.components"]):::src
+    m2_s2["mean"]
+    m2_s1 --&gt; m2_s2
+  end
   AGG["aggregate: WeightedAverage"]:::stage
   SM["smooth: Ema"]:::stage
   BURN{{"@burn: redirect a fraction"}}:::ov
@@ -6585,8 +6597,10 @@
   GT --&gt; M0
   G --&gt; M1
   GT --&gt; M1
+  m1_s3 --&gt; M1
   G --&gt; M2
   GT --&gt; M2
+  m2_s2 --&gt; M2
   M0 --&gt; AGG
   M1 --&gt; AGG
   M2 --&gt; AGG

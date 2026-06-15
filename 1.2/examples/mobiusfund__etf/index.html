@@ -6572,6 +6572,13 @@
   GT(["groundTruth: MarketData, OrganicTraffic"]):::in
   G{{"@guards: Deduplication, Other, Other"}}:::ov
   M0[["the metric: stake_amount_with_duration_bonus"]]:::holex
+  subgraph sg0 ["spec: submission.stake * submission.duration_bonus"]
+    m0_s1(["submission.stake"]):::src
+    m0_s2["*"]
+    m0_s3(["submission.duration_bonus"]):::src
+    m0_s1 --&gt; m0_s2
+    m0_s3 --&gt; m0_s2
+  end
   M1[["the metric: volume"]]:::hole
   AGG["aggregate: Proportional"]:::stage
   BURN{{"@burn: redirect a fraction"}}:::ov
@@ -6580,6 +6587,7 @@
   SUB --&gt; G
   G --&gt; M0
   GT --&gt; M0
+  m0_s2 --&gt; M0
   G --&gt; M1
   GT --&gt; M1
   M0 --&gt; AGG

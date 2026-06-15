@@ -6575,6 +6575,11 @@
   M1[["the metric: data_desirability_weight"]]:::holex
   M2[["the metric: freshness_decay"]]:::holex
   M3[["the metric: validation_pass_rate_multiplier"]]:::holex
+  subgraph sg3 ["spec: rate(submission.validations)"]
+    m3_s1(["submission.validations"]):::src
+    m3_s2["rate"]
+    m3_s1 --&gt; m3_s2
+  end
   AGG["aggregate: Proportional"]:::stage
   BURN{{"@burn: redirect a fraction"}}:::ov
   PUB["publish: SetWeights"]:::stage
@@ -6589,6 +6594,7 @@
   GT --&gt; M2
   G --&gt; M3
   GT --&gt; M3
+  m3_s2 --&gt; M3
   M0 --&gt; AGG
   M1 --&gt; AGG
   M2 --&gt; AGG

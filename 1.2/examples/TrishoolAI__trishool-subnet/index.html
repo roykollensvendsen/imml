@@ -6572,12 +6572,20 @@
   GT(["groundTruth: LlmJudgment"]):::in
   G{{"@guards: Deduplication, RateLimit, DeterministicCheck"}}:::ov
   M0[["the metric: llm_judgment"]]:::hole
+  subgraph sg0 ["spec: similarity(submission.output, groundTruth.judge)"]
+    m0_s1(["submission.output"]):::src
+    m0_s2(["groundTruth.judge"]):::src
+    m0_s3["similarity"]
+    m0_s1 --&gt; m0_s3
+    m0_s2 --&gt; m0_s3
+  end
   AGG["aggregate: Undocumented"]:::stage
   PUB["publish: SetWeights"]:::stage
   OUT(["weights on-chain = final score"]):::out
   SUB --&gt; G
   G --&gt; M0
   GT --&gt; M0
+  m0_s3 --&gt; M0
   M0 --&gt; AGG
   AGG --&gt; PUB
   PUB --&gt; OUT

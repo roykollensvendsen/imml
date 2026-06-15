@@ -6573,6 +6573,13 @@
   G{{"@guards: ChallengePeriod, CommitReveal, RateLimit"}}:::ov
   M0[["the metric: throughput"]]:::hole
   M1[["the metric: similarity"]]:::hole
+  subgraph sg1 ["spec: similarity(submission.output, groundTruth.refere"]
+    m1_s1(["submission.output"]):::src
+    m1_s2(["groundTruth.reference"]):::src
+    m1_s3["similarity"]
+    m1_s1 --&gt; m1_s3
+    m1_s2 --&gt; m1_s3
+  end
   M2[["the metric: uptime"]]:::hole
   AGG["aggregate: WeightedAverage"]:::stage
   PUB["publish: CommitReveal"]:::stage
@@ -6583,6 +6590,7 @@
   GT --&gt; M0
   G --&gt; M1
   GT --&gt; M1
+  m1_s3 --&gt; M1
   G --&gt; M2
   GT --&gt; M2
   M0 --&gt; AGG

@@ -6572,7 +6572,21 @@
   GT(["groundTruth: MarketData"]):::in
   G{{"@guards: RateLimit, StakeWeighting"}}:::ov
   M0[["the metric: regression_error"]]:::hole
+  subgraph sg0 ["spec: error(submission.prediction, groundTruth.target)"]
+    m0_s1(["submission.prediction"]):::src
+    m0_s2(["groundTruth.target"]):::src
+    m0_s3["error"]
+    m0_s1 --&gt; m0_s3
+    m0_s2 --&gt; m0_s3
+  end
   M1[["the metric: regression_error"]]:::hole
+  subgraph sg1 ["spec: error(submission.prediction, groundTruth.target)"]
+    m1_s1(["submission.prediction"]):::src
+    m1_s2(["groundTruth.target"]):::src
+    m1_s3["error"]
+    m1_s1 --&gt; m1_s3
+    m1_s2 --&gt; m1_s3
+  end
   AGG["aggregate: RankBased"]:::stage
   PUB["publish: SetWeights"]:::stage
   OUT(["weights on-chain = final score"]):::out
@@ -6580,8 +6594,10 @@
   SUB --&gt; G
   G --&gt; M0
   GT --&gt; M0
+  m0_s3 --&gt; M0
   G --&gt; M1
   GT --&gt; M1
+  m1_s3 --&gt; M1
   M0 --&gt; AGG
   M1 --&gt; AGG
   AGG --&gt; PUB

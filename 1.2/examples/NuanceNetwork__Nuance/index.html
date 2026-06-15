@@ -6573,6 +6573,13 @@
   G{{"@guards: RateLimit, DeterministicCheck, Other"}}:::ov
   M0[["the metric: engagement"]]:::hole
   M1[["the metric: llm_judgment"]]:::hole
+  subgraph sg1 ["spec: similarity(submission.output, groundTruth.judge)"]
+    m1_s1(["submission.output"]):::src
+    m1_s2(["groundTruth.judge"]):::src
+    m1_s3["similarity"]
+    m1_s1 --&gt; m1_s3
+    m1_s2 --&gt; m1_s3
+  end
   M2[["the metric: human_judgment"]]:::hole
   M3[["the metric: engagement"]]:::hole
   AGG["aggregate: WeightedAverage"]:::stage
@@ -6584,6 +6591,7 @@
   GT --&gt; M0
   G --&gt; M1
   GT --&gt; M1
+  m1_s3 --&gt; M1
   G --&gt; M2
   GT --&gt; M2
   G --&gt; M3

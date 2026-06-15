@@ -6572,7 +6572,19 @@
   GT(["groundTruth: MarketData"]):::in
   G{{"@guards: DeterministicCheck"}}:::ov
   M0[["the metric: liquidity_range_width_penalty"]]:::holex
+  subgraph sg0 ["spec: penalty(submission.range_width)"]
+    m0_s1(["submission.range_width"]):::src
+    m0_s2["penalty"]
+    m0_s1 --&gt; m0_s2
+  end
   M1[["the metric: distance_from_pool_current_tick"]]:::holex
+  subgraph sg1 ["spec: error(submission.tick, task.current_tick)"]
+    m1_s1(["submission.tick"]):::src
+    m1_s2(["task.current_tick"]):::src
+    m1_s3["error"]
+    m1_s1 --&gt; m1_s3
+    m1_s2 --&gt; m1_s3
+  end
   M2[["the metric: position_liquidity"]]:::holex
   AGG["aggregate: Proportional"]:::stage
   BURN{{"@burn: redirect a fraction"}}:::ov
@@ -6582,8 +6594,10 @@
   SUB --&gt; G
   G --&gt; M0
   GT --&gt; M0
+  m0_s2 --&gt; M0
   G --&gt; M1
   GT --&gt; M1
+  m1_s3 --&gt; M1
   G --&gt; M2
   GT --&gt; M2
   M0 --&gt; AGG

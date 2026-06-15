@@ -6572,6 +6572,11 @@
   GT(["groundTruth: DeterministicDataset"]):::in
   G{{"@guards: CodeInspection, Deduplication, DeterministicCheck"}}:::ov
   M0[["the metric: accuracy"]]:::hole
+  subgraph sg0 ["spec: rate(submission.correct)"]
+    m0_s1(["submission.correct"]):::src
+    m0_s2["rate"]
+    m0_s1 --&gt; m0_s2
+  end
   M1[["the metric: parameter_count"]]:::holex
   M2[["the metric: throughput"]]:::hole
   AGG["aggregate: Softmax"]:::stage
@@ -6581,6 +6586,7 @@
   SUB --&gt; G
   G --&gt; M0
   GT --&gt; M0
+  m0_s2 --&gt; M0
   G --&gt; M1
   GT --&gt; M1
   G --&gt; M2

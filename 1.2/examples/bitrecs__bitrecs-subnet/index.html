@@ -6572,11 +6572,35 @@
   GT(["groundTruth: Other, Other"]):::in
   G{{"@guards: DeterministicCheck, LivenessCheck, Other"}}:::ov
   M0[["the metric: deterministic_validity_gate"]]:::holex
+  subgraph sg0 ["spec: gate(submission.valid)"]
+    m0_s1(["submission.valid"]):::src
+    m0_s2["gate"]
+    m0_s1 --&gt; m0_s2
+  end
   M1[["the metric: reward"]]:::hole
   M2[["the metric: llm_judgment"]]:::hole
+  subgraph sg2 ["spec: similarity(submission.output, groundTruth.judge)"]
+    m2_s1(["submission.output"]):::src
+    m2_s2(["groundTruth.judge"]):::src
+    m2_s3["similarity"]
+    m2_s1 --&gt; m2_s3
+    m2_s2 --&gt; m2_s3
+  end
   M3[["the metric: cryptographic_proof_of_inference"]]:::holex
+  subgraph sg3 ["spec: gate(submission.proof_valid)"]
+    m3_s1(["submission.proof_valid"]):::src
+    m3_s2["gate"]
+    m3_s1 --&gt; m3_s2
+  end
   M4[["the metric: model_rarity_multiplier"]]:::holex
   M5[["the metric: similarity"]]:::hole
+  subgraph sg5 ["spec: similarity(submission.output, groundTruth.refere"]
+    m5_s1(["submission.output"]):::src
+    m5_s2(["groundTruth.reference"]):::src
+    m5_s3["similarity"]
+    m5_s1 --&gt; m5_s3
+    m5_s2 --&gt; m5_s3
+  end
   AGG["aggregate: WeightedAverage"]:::stage
   SM["smooth: Ema"]:::stage
   BURN{{"@burn: redirect a fraction"}}:::ov
@@ -6586,16 +6610,20 @@
   SUB --&gt; G
   G --&gt; M0
   GT --&gt; M0
+  m0_s2 --&gt; M0
   G --&gt; M1
   GT --&gt; M1
   G --&gt; M2
   GT --&gt; M2
+  m2_s3 --&gt; M2
   G --&gt; M3
   GT --&gt; M3
+  m3_s2 --&gt; M3
   G --&gt; M4
   GT --&gt; M4
   G --&gt; M5
   GT --&gt; M5
+  m5_s3 --&gt; M5
   M0 --&gt; AGG
   M1 --&gt; AGG
   M2 --&gt; AGG

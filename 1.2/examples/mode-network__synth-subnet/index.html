@@ -6572,6 +6572,15 @@
   GT(["groundTruth: MarketData"]):::in
   G{{"@guards: DeterministicCheck, Other"}}:::ov
   M0[["the metric: probabilistic_forecast_crps"]]:::holex
+  subgraph sg0 ["spec: score_rule(crps, submission.forecast, groundTrut"]
+    m0_s1(["crps"]):::src
+    m0_s2(["submission.forecast"]):::src
+    m0_s3(["groundTruth.outcome"]):::src
+    m0_s4["score_rule"]
+    m0_s1 --&gt; m0_s4
+    m0_s2 --&gt; m0_s4
+    m0_s3 --&gt; m0_s4
+  end
   AGG["aggregate: Softmax"]:::stage
   PUB["publish: SetWeights"]:::stage
   OUT(["weights on-chain = final score"]):::out
@@ -6579,6 +6588,7 @@
   SUB --&gt; G
   G --&gt; M0
   GT --&gt; M0
+  m0_s4 --&gt; M0
   M0 --&gt; AGG
   AGG --&gt; PUB
   PUB --&gt; OUT

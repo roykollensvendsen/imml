@@ -6572,8 +6572,18 @@
   GT(["groundTruth: HardwareProbe"]):::in
   G{{"@guards: DeterministicCheck, LivenessCheck, Other"}}:::ov
   M0[["the metric: accuracy"]]:::hole
+  subgraph sg0 ["spec: rate(submission.correct)"]
+    m0_s1(["submission.correct"]):::src
+    m0_s2["rate"]
+    m0_s1 --&gt; m0_s2
+  end
   M1[["the metric: uptime"]]:::hole
   M2[["the metric: latency"]]:::hole
+  subgraph sg2 ["spec: penalty(submission.latency)"]
+    m2_s1(["submission.latency"]):::src
+    m2_s2["penalty"]
+    m2_s1 --&gt; m2_s2
+  end
   AGG["aggregate: Proportional"]:::stage
   SM["smooth: Ema"]:::stage
   PUB["publish: SetWeights"]:::stage
@@ -6582,10 +6592,12 @@
   SUB --&gt; G
   G --&gt; M0
   GT --&gt; M0
+  m0_s2 --&gt; M0
   G --&gt; M1
   GT --&gt; M1
   G --&gt; M2
   GT --&gt; M2
+  m2_s2 --&gt; M2
   M0 --&gt; AGG
   M1 --&gt; AGG
   M2 --&gt; AGG

@@ -6574,6 +6574,11 @@
   M0[["the metric: volume"]]:::hole
   M1[["the metric: volume"]]:::hole
   M2[["the metric: refund-rate multiplicative penalty"]]:::holex
+  subgraph sg2 ["spec: penalty(submission.refund_rate)"]
+    m2_s1(["submission.refund_rate"]):::src
+    m2_s2["penalty"]
+    m2_s1 --&gt; m2_s2
+  end
   AGG["aggregate: WeightedAverage"]:::stage
   BURN{{"@burn: redirect a fraction"}}:::ov
   PUB["publish: CommitReveal"]:::stage
@@ -6586,6 +6591,7 @@
   GT --&gt; M1
   G --&gt; M2
   GT --&gt; M2
+  m2_s2 --&gt; M2
   M0 --&gt; AGG
   M1 --&gt; AGG
   M2 --&gt; AGG

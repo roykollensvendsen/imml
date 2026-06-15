@@ -6572,8 +6572,20 @@
   GT(["groundTruth: DeterministicDataset, CommitReveal"]):::in
   G{{"@guards: PlagiarismDetection, Deduplication, CommitReveal"}}:::ov
   M0[["the metric: composite"]]:::hole
+  subgraph sg0 ["spec: mean(submission.components)"]
+    m0_s1(["submission.components"]):::src
+    m0_s2["mean"]
+    m0_s1 --&gt; m0_s2
+  end
   M1[["the metric: owner_burn_allocation"]]:::holex
   M2[["the metric: similarity"]]:::hole
+  subgraph sg2 ["spec: similarity(submission.output, groundTruth.refere"]
+    m2_s1(["submission.output"]):::src
+    m2_s2(["groundTruth.reference"]):::src
+    m2_s3["similarity"]
+    m2_s1 --&gt; m2_s3
+    m2_s2 --&gt; m2_s3
+  end
   AGG["aggregate: WeightedAverage"]:::stage
   SM["smooth: Other"]:::stage
   BURN{{"@burn: redirect a fraction"}}:::ov
@@ -6583,10 +6595,12 @@
   SUB --&gt; G
   G --&gt; M0
   GT --&gt; M0
+  m0_s2 --&gt; M0
   G --&gt; M1
   GT --&gt; M1
   G --&gt; M2
   GT --&gt; M2
+  m2_s3 --&gt; M2
   M0 --&gt; AGG
   M1 --&gt; AGG
   M2 --&gt; AGG

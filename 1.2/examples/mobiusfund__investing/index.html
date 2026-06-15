@@ -6572,9 +6572,35 @@
   GT(["groundTruth: MarketData"]):::in
   G{{"@guards: Deduplication, LivenessCheck, StakeWeighting"}}:::ov
   M0[["the metric: composite"]]:::hole
+  subgraph sg0 ["spec: mean(submission.components)"]
+    m0_s1(["submission.components"]):::src
+    m0_s2["mean"]
+    m0_s1 --&gt; m0_s2
+  end
   M1[["the metric: risk_adjusted_ratio"]]:::hole
+  subgraph sg1 ["spec: submission.excess_return / submission.volatility"]
+    m1_s1(["submission.excess_return"]):::src
+    m1_s2["/"]
+    m1_s3(["submission.volatility"]):::src
+    m1_s1 --&gt; m1_s2
+    m1_s3 --&gt; m1_s2
+  end
   M2[["the metric: risk_adjusted_ratio"]]:::hole
+  subgraph sg2 ["spec: submission.excess_return / submission.volatility"]
+    m2_s1(["submission.excess_return"]):::src
+    m2_s2["/"]
+    m2_s3(["submission.volatility"]):::src
+    m2_s1 --&gt; m2_s2
+    m2_s3 --&gt; m2_s2
+  end
   M3[["the metric: win_rate"]]:::hole
+  subgraph sg3 ["spec: beats(submission.score, peers)"]
+    m3_s1(["submission.score"]):::src
+    m3_s2(["peers"]):::src
+    m3_s3["beats"]
+    m3_s1 --&gt; m3_s3
+    m3_s2 --&gt; m3_s3
+  end
   M4[["the metric: pnl"]]:::hole
   AGG["aggregate: Proportional"]:::stage
   BURN{{"@burn: redirect a fraction"}}:::ov
@@ -6584,12 +6610,16 @@
   SUB --&gt; G
   G --&gt; M0
   GT --&gt; M0
+  m0_s2 --&gt; M0
   G --&gt; M1
   GT --&gt; M1
+  m1_s2 --&gt; M1
   G --&gt; M2
   GT --&gt; M2
+  m2_s2 --&gt; M2
   G --&gt; M3
   GT --&gt; M3
+  m3_s3 --&gt; M3
   G --&gt; M4
   GT --&gt; M4
   M0 --&gt; AGG

@@ -6575,7 +6575,17 @@
   M1[["the metric: throughput"]]:::hole
   M2[["the metric: uptime"]]:::hole
   M3[["the metric: validator-issued strike penalty"]]:::holex
+  subgraph sg3 ["spec: penalty(submission.strikes)"]
+    m3_s1(["submission.strikes"]):::src
+    m3_s2["penalty"]
+    m3_s1 --&gt; m3_s2
+  end
   M4[["the metric: data-integrity failure penalty"]]:::holex
+  subgraph sg4 ["spec: penalty(submission.integrity_failures)"]
+    m4_s1(["submission.integrity_failures"]):::src
+    m4_s2["penalty"]
+    m4_s1 --&gt; m4_s2
+  end
   AGG["aggregate: WeightedAverage"]:::stage
   SM["smooth: Ema"]:::stage
   BURN{{"@burn: redirect a fraction"}}:::ov
@@ -6591,8 +6601,10 @@
   GT --&gt; M2
   G --&gt; M3
   GT --&gt; M3
+  m3_s2 --&gt; M3
   G --&gt; M4
   GT --&gt; M4
+  m4_s2 --&gt; M4
   M0 --&gt; AGG
   M1 --&gt; AGG
   M2 --&gt; AGG

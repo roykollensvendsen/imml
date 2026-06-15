@@ -6572,7 +6572,17 @@
   GT(["groundTruth: DeterministicDataset"]):::in
   G{{"@guards: LivenessCheck, DeterministicCheck, StakeWeighting"}}:::ov
   M0[["the metric: loss"]]:::hole
+  subgraph sg0 ["spec: penalty(submission.loss)"]
+    m0_s1(["submission.loss"]):::src
+    m0_s2["penalty"]
+    m0_s1 --&gt; m0_s2
+  end
   M1[["the metric: loss"]]:::hole
+  subgraph sg1 ["spec: penalty(submission.loss)"]
+    m1_s1(["submission.loss"]):::src
+    m1_s2["penalty"]
+    m1_s1 --&gt; m1_s2
+  end
   M2[["the metric: uptime"]]:::hole
   M3[["the metric: uptime"]]:::hole
   AGG["aggregate: WeightedAverage"]:::stage
@@ -6583,8 +6593,10 @@
   SUB --&gt; G
   G --&gt; M0
   GT --&gt; M0
+  m0_s2 --&gt; M0
   G --&gt; M1
   GT --&gt; M1
+  m1_s2 --&gt; M1
   G --&gt; M2
   GT --&gt; M2
   G --&gt; M3

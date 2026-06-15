@@ -6572,7 +6572,19 @@
   GT(["groundTruth: MarketData, DeterministicDataset"]):::in
   G{{"@guards: CodeInspection, CommitReveal, DeterministicCheck"}}:::ov
   M0[["the metric: llm_judgment"]]:::hole
+  subgraph sg0 ["spec: similarity(submission.output, groundTruth.judge)"]
+    m0_s1(["submission.output"]):::src
+    m0_s2(["groundTruth.judge"]):::src
+    m0_s3["similarity"]
+    m0_s1 --&gt; m0_s3
+    m0_s2 --&gt; m0_s3
+  end
   M1[["the metric: accuracy"]]:::hole
+  subgraph sg1 ["spec: rate(submission.correct)"]
+    m1_s1(["submission.correct"]):::src
+    m1_s2["rate"]
+    m1_s1 --&gt; m1_s2
+  end
   M2[["the metric: on_chain_constraint_score_bps"]]:::holex
   AGG["aggregate: ExponentialDecayEma"]:::stage
   BURN{{"@burn: redirect a fraction"}}:::ov
@@ -6582,8 +6594,10 @@
   SUB --&gt; G
   G --&gt; M0
   GT --&gt; M0
+  m0_s3 --&gt; M0
   G --&gt; M1
   GT --&gt; M1
+  m1_s2 --&gt; M1
   G --&gt; M2
   GT --&gt; M2
   M0 --&gt; AGG

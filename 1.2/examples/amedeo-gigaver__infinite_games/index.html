@@ -6573,6 +6573,15 @@
   G{{"@guards: DeterministicCheck, LivenessCheck, Deduplication"}}:::ov
   M0[["the metric: predictive_contribution"]]:::hole
   M1[["the metric: probabilistic_forecast"]]:::hole
+  subgraph sg1 ["spec: score_rule(crps, submission.forecast, groundTrut"]
+    m1_s1(["crps"]):::src
+    m1_s2(["submission.forecast"]):::src
+    m1_s3(["groundTruth.outcome"]):::src
+    m1_s4["score_rule"]
+    m1_s1 --&gt; m1_s4
+    m1_s2 --&gt; m1_s4
+    m1_s3 --&gt; m1_s4
+  end
   AGG["aggregate: WeightedAverage"]:::stage
   SM["smooth: Ema"]:::stage
   BURN{{"@burn: redirect a fraction"}}:::ov
@@ -6584,6 +6593,7 @@
   GT --&gt; M0
   G --&gt; M1
   GT --&gt; M1
+  m1_s4 --&gt; M1
   M0 --&gt; AGG
   M1 --&gt; AGG
   AGG --&gt; SM

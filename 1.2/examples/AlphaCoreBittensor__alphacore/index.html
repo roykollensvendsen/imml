@@ -6572,7 +6572,17 @@
   GT(["groundTruth: Other"]):::in
   G{{"@guards: DeterministicCheck, LivenessCheck"}}:::ov
   M0[["the metric: accuracy"]]:::hole
+  subgraph sg0 ["spec: rate(submission.correct)"]
+    m0_s1(["submission.correct"]):::src
+    m0_s2["rate"]
+    m0_s1 --&gt; m0_s2
+  end
   M1[["the metric: latency"]]:::hole
+  subgraph sg1 ["spec: penalty(submission.latency)"]
+    m1_s1(["submission.latency"]):::src
+    m1_s2["penalty"]
+    m1_s1 --&gt; m1_s2
+  end
   AGG["aggregate: WinnerTakeAll"]:::stage
   SM["smooth: Ema"]:::stage
   BURN{{"@burn: redirect a fraction"}}:::ov
@@ -6582,8 +6592,10 @@
   SUB --&gt; G
   G --&gt; M0
   GT --&gt; M0
+  m0_s2 --&gt; M0
   G --&gt; M1
   GT --&gt; M1
+  m1_s2 --&gt; M1
   M0 --&gt; AGG
   M1 --&gt; AGG
   AGG --&gt; SM

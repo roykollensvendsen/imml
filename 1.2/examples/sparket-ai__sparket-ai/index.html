@@ -6572,12 +6572,53 @@
   GT(["groundTruth: MarketData, RealEngagement"]):::in
   G{{"@guards: DeterministicCheck, Deduplication, RateLimit"}}:::ov
   M0[["the metric: probabilistic_forecast"]]:::hole
+  subgraph sg0 ["spec: score_rule(crps, submission.forecast, groundTrut"]
+    m0_s1(["crps"]):::src
+    m0_s2(["submission.forecast"]):::src
+    m0_s3(["groundTruth.outcome"]):::src
+    m0_s4["score_rule"]
+    m0_s1 --&gt; m0_s4
+    m0_s2 --&gt; m0_s4
+    m0_s3 --&gt; m0_s4
+  end
   M1[["the metric: probabilistic_forecast"]]:::hole
+  subgraph sg1 ["spec: score_rule(crps, submission.forecast, groundTrut"]
+    m1_s1(["crps"]):::src
+    m1_s2(["submission.forecast"]):::src
+    m1_s3(["groundTruth.outcome"]):::src
+    m1_s4["score_rule"]
+    m1_s1 --&gt; m1_s4
+    m1_s2 --&gt; m1_s4
+    m1_s3 --&gt; m1_s4
+  end
   M2[["the metric: pnl"]]:::hole
   M3[["the metric: similarity"]]:::hole
+  subgraph sg3 ["spec: similarity(submission.output, groundTruth.refere"]
+    m3_s1(["submission.output"]):::src
+    m3_s2(["groundTruth.reference"]):::src
+    m3_s3["similarity"]
+    m3_s1 --&gt; m3_s3
+    m3_s2 --&gt; m3_s3
+  end
   M4[["the metric: probabilistic_forecast"]]:::hole
+  subgraph sg4 ["spec: score_rule(crps, submission.forecast, groundTrut"]
+    m4_s1(["crps"]):::src
+    m4_s2(["submission.forecast"]):::src
+    m4_s3(["groundTruth.outcome"]):::src
+    m4_s4["score_rule"]
+    m4_s1 --&gt; m4_s4
+    m4_s2 --&gt; m4_s4
+    m4_s3 --&gt; m4_s4
+  end
   M5[["the metric: predictive_contribution"]]:::hole
   M6[["the metric: similarity"]]:::hole
+  subgraph sg6 ["spec: similarity(submission.output, groundTruth.refere"]
+    m6_s1(["submission.output"]):::src
+    m6_s2(["groundTruth.reference"]):::src
+    m6_s3["similarity"]
+    m6_s1 --&gt; m6_s3
+    m6_s2 --&gt; m6_s3
+  end
   M7[["the metric: predictive_contribution"]]:::hole
   AGG["aggregate: WeightedAverage"]:::stage
   SM["smooth: Ema"]:::stage
@@ -6588,18 +6629,23 @@
   SUB --&gt; G
   G --&gt; M0
   GT --&gt; M0
+  m0_s4 --&gt; M0
   G --&gt; M1
   GT --&gt; M1
+  m1_s4 --&gt; M1
   G --&gt; M2
   GT --&gt; M2
   G --&gt; M3
   GT --&gt; M3
+  m3_s3 --&gt; M3
   G --&gt; M4
   GT --&gt; M4
+  m4_s4 --&gt; M4
   G --&gt; M5
   GT --&gt; M5
   G --&gt; M6
   GT --&gt; M6
+  m6_s3 --&gt; M6
   G --&gt; M7
   GT --&gt; M7
   M0 --&gt; AGG

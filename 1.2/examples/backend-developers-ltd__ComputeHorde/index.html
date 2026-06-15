@@ -6573,6 +6573,11 @@
   G{{"@guards: CommitReveal, Other, Collateral"}}:::ov
   M0[["the metric: throughput"]]:::hole
   M1[["the metric: fixed score per successfully completed, non-"]]:::holex
+  subgraph sg1 ["spec: count(submission.completed_jobs)"]
+    m1_s1(["submission.completed_jobs"]):::src
+    m1_s2["count"]
+    m1_s1 --&gt; m1_s2
+  end
   AGG["aggregate: WeightedAverage"]:::stage
   BURN{{"@burn: redirect a fraction"}}:::ov
   PUB["publish: CommitReveal"]:::stage
@@ -6583,6 +6588,7 @@
   GT --&gt; M0
   G --&gt; M1
   GT --&gt; M1
+  m1_s2 --&gt; M1
   M0 --&gt; AGG
   M1 --&gt; AGG
   AGG --&gt; BURN

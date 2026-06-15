@@ -6572,6 +6572,11 @@
   GT(["groundTruth: DeterministicDataset"]):::in
   G{{"@guards: DeterministicCheck"}}:::ov
   M0[["the metric: loss"]]:::hole
+  subgraph sg0 ["spec: penalty(submission.loss)"]
+    m0_s1(["submission.loss"]):::src
+    m0_s2["penalty"]
+    m0_s1 --&gt; m0_s2
+  end
   AGG["aggregate: WeightedAverage"]:::stage
   SM["smooth: Ema"]:::stage
   BURN{{"@burn: redirect a fraction"}}:::ov
@@ -6581,6 +6586,7 @@
   SUB --&gt; G
   G --&gt; M0
   GT --&gt; M0
+  m0_s2 --&gt; M0
   M0 --&gt; AGG
   AGG --&gt; SM
   SM --&gt; BURN

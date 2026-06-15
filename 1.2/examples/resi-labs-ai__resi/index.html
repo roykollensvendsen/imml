@@ -6573,8 +6573,23 @@
   G{{"@guards: Deduplication, DeterministicCheck, HardwareValidation"}}:::ov
   M0[["the metric: volume"]]:::hole
   M1[["the metric: accuracy"]]:::hole
+  subgraph sg1 ["spec: rate(submission.correct)"]
+    m1_s1(["submission.correct"]):::src
+    m1_s2["rate"]
+    m1_s1 --&gt; m1_s2
+  end
   M2[["the metric: accuracy"]]:::hole
+  subgraph sg2 ["spec: rate(submission.correct)"]
+    m2_s1(["submission.correct"]):::src
+    m2_s2["rate"]
+    m2_s1 --&gt; m2_s2
+  end
   M3[["the metric: latency"]]:::hole
+  subgraph sg3 ["spec: penalty(submission.latency)"]
+    m3_s1(["submission.latency"]):::src
+    m3_s2["penalty"]
+    m3_s1 --&gt; m3_s2
+  end
   M4[["the metric: reward"]]:::hole
   AGG["aggregate: WinnerTakeAll"]:::stage
   BURN{{"@burn: redirect a fraction"}}:::ov
@@ -6585,10 +6600,13 @@
   GT --&gt; M0
   G --&gt; M1
   GT --&gt; M1
+  m1_s2 --&gt; M1
   G --&gt; M2
   GT --&gt; M2
+  m2_s2 --&gt; M2
   G --&gt; M3
   GT --&gt; M3
+  m3_s2 --&gt; M3
   G --&gt; M4
   GT --&gt; M4
   M0 --&gt; AGG

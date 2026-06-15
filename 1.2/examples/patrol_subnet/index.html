@@ -6573,6 +6573,11 @@
   G{{"@guards: DeterministicCheck, Deduplication"}}:::ov
   M0[["the metric: volume"]]:::hole
   M1[["the metric: latency"]]:::hole
+  subgraph sg1 ["spec: penalty(submission.latency)"]
+    m1_s1(["submission.latency"]):::src
+    m1_s2["penalty"]
+    m1_s1 --&gt; m1_s2
+  end
   M2[["the metric: novelty_uniqueness"]]:::holex
   AGG["aggregate: Proportional"]:::stage
   SM["smooth: Sma"]:::stage
@@ -6584,6 +6589,7 @@
   GT --&gt; M0
   G --&gt; M1
   GT --&gt; M1
+  m1_s2 --&gt; M1
   G --&gt; M2
   GT --&gt; M2
   M0 --&gt; AGG

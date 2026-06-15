@@ -6573,6 +6573,13 @@
   G{{"@guards: LivenessCheck, StakeWeighting, DeterministicCheck"}}:::ov
   M0[["the metric: pnl"]]:::hole
   M1[["the metric: risk_adjusted_ratio"]]:::hole
+  subgraph sg1 ["spec: submission.excess_return / submission.volatility"]
+    m1_s1(["submission.excess_return"]):::src
+    m1_s2["/"]
+    m1_s3(["submission.volatility"]):::src
+    m1_s1 --&gt; m1_s2
+    m1_s3 --&gt; m1_s2
+  end
   M2[["the metric: engagement"]]:::hole
   AGG["aggregate: Proportional"]:::stage
   SM["smooth: Ema"]:::stage
@@ -6585,6 +6592,7 @@
   GT --&gt; M0
   G --&gt; M1
   GT --&gt; M1
+  m1_s2 --&gt; M1
   G --&gt; M2
   GT --&gt; M2
   M0 --&gt; AGG

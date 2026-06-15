@@ -6573,11 +6573,44 @@
   G{{"@guards: PlagiarismDetection, Other, Collateral"}}:::ov
   M0[["the metric: pnl"]]:::hole
   M1[["the metric: calmar_ratio"]]:::holex
+  subgraph sg1 ["spec: submission.annual_return / submission.max_drawdo"]
+    m1_s1(["submission.annual_return"]):::src
+    m1_s2["/"]
+    m1_s3(["submission.max_drawdown"]):::src
+    m1_s1 --&gt; m1_s2
+    m1_s3 --&gt; m1_s2
+  end
   M2[["the metric: sharpe_ratio"]]:::holex
+  subgraph sg2 ["spec: submission.excess_return / submission.volatility"]
+    m2_s1(["submission.excess_return"]):::src
+    m2_s2["/"]
+    m2_s3(["submission.volatility"]):::src
+    m2_s1 --&gt; m2_s2
+    m2_s3 --&gt; m2_s2
+  end
   M3[["the metric: omega_ratio"]]:::holex
+  subgraph sg3 ["spec: submission.gains / submission.losses"]
+    m3_s1(["submission.gains"]):::src
+    m3_s2["/"]
+    m3_s3(["submission.losses"]):::src
+    m3_s1 --&gt; m3_s2
+    m3_s3 --&gt; m3_s2
+  end
   M4[["the metric: sortino_ratio"]]:::holex
+  subgraph sg4 ["spec: submission.excess_return / submission.downside_d"]
+    m4_s1(["submission.excess_return"]):::src
+    m4_s2["/"]
+    m4_s3(["submission.downside_deviation"]):::src
+    m4_s1 --&gt; m4_s2
+    m4_s3 --&gt; m4_s2
+  end
   M5[["the metric: statistical_confidence"]]:::holex
   M6[["the metric: max_drawdown_penalty"]]:::holex
+  subgraph sg6 ["spec: penalty(submission.max_drawdown)"]
+    m6_s1(["submission.max_drawdown"]):::src
+    m6_s2["penalty"]
+    m6_s1 --&gt; m6_s2
+  end
   AGG["aggregate: Proportional"]:::stage
   BURN{{"@burn: redirect a fraction"}}:::ov
   PUB["publish: SetWeights"]:::stage
@@ -6588,16 +6621,21 @@
   GT --&gt; M0
   G --&gt; M1
   GT --&gt; M1
+  m1_s2 --&gt; M1
   G --&gt; M2
   GT --&gt; M2
+  m2_s2 --&gt; M2
   G --&gt; M3
   GT --&gt; M3
+  m3_s2 --&gt; M3
   G --&gt; M4
   GT --&gt; M4
+  m4_s2 --&gt; M4
   G --&gt; M5
   GT --&gt; M5
   G --&gt; M6
   GT --&gt; M6
+  m6_s2 --&gt; M6
   M0 --&gt; AGG
   M1 --&gt; AGG
   M2 --&gt; AGG

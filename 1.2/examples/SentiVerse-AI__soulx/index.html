@@ -6572,10 +6572,34 @@
   GT(["groundTruth: OrganicTraffic"]):::in
   G{{"@guards: StakeWeighting, LivenessCheck"}}:::ov
   M0[["the metric: accuracy"]]:::hole
+  subgraph sg0 ["spec: rate(submission.correct)"]
+    m0_s1(["submission.correct"]):::src
+    m0_s2["rate"]
+    m0_s1 --&gt; m0_s2
+  end
   M1[["the metric: latency"]]:::hole
+  subgraph sg1 ["spec: penalty(submission.latency)"]
+    m1_s1(["submission.latency"]):::src
+    m1_s2["penalty"]
+    m1_s1 --&gt; m1_s2
+  end
   M2[["the metric: throughput"]]:::hole
   M3[["the metric: response_length_and_greeting_keyword"]]:::holex
+  subgraph sg3 ["spec: submission.response_length + gate(submission.has"]
+    m3_s1(["submission.response_length"]):::src
+    m3_s2["+"]
+    m3_s3(["submission.has_greeting_keyword"]):::src
+    m3_s4["gate"]
+    m3_s1 --&gt; m3_s2
+    m3_s3 --&gt; m3_s4
+    m3_s4 --&gt; m3_s2
+  end
   M4[["the metric: composite"]]:::hole
+  subgraph sg4 ["spec: mean(submission.components)"]
+    m4_s1(["submission.components"]):::src
+    m4_s2["mean"]
+    m4_s1 --&gt; m4_s2
+  end
   AGG["aggregate: WeightedAverage"]:::stage
   SM["smooth: Ema"]:::stage
   BURN{{"@burn: redirect a fraction"}}:::ov
@@ -6585,14 +6609,18 @@
   SUB --&gt; G
   G --&gt; M0
   GT --&gt; M0
+  m0_s2 --&gt; M0
   G --&gt; M1
   GT --&gt; M1
+  m1_s2 --&gt; M1
   G --&gt; M2
   GT --&gt; M2
   G --&gt; M3
   GT --&gt; M3
+  m3_s2 --&gt; M3
   G --&gt; M4
   GT --&gt; M4
+  m4_s2 --&gt; M4
   M0 --&gt; AGG
   M1 --&gt; AGG
   M2 --&gt; AGG

@@ -6572,8 +6572,22 @@
   GT(["groundTruth: HardwareProbe, OrganicTraffic"]):::in
   G{{"@guards: LivenessCheck, CodeInspection"}}:::ov
   M0[["the metric: model_whitelist_membership"]]:::holex
+  subgraph sg0 ["spec: gate(member(submission.model, task.whitelist))"]
+    m0_s1(["submission.model"]):::src
+    m0_s2(["task.whitelist"]):::src
+    m0_s3["member"]
+    m0_s4["gate"]
+    m0_s1 --&gt; m0_s3
+    m0_s2 --&gt; m0_s3
+    m0_s3 --&gt; m0_s4
+  end
   M1[["the metric: uptime"]]:::hole
   M2[["the metric: latency"]]:::hole
+  subgraph sg2 ["spec: penalty(submission.latency)"]
+    m2_s1(["submission.latency"]):::src
+    m2_s2["penalty"]
+    m2_s1 --&gt; m2_s2
+  end
   M3[["the metric: uptime"]]:::hole
   M4[["the metric: commercial_request_contribution"]]:::holex
   AGG["aggregate: WeightedAverage"]:::stage
@@ -6583,10 +6597,12 @@
   SUB --&gt; G
   G --&gt; M0
   GT --&gt; M0
+  m0_s4 --&gt; M0
   G --&gt; M1
   GT --&gt; M1
   G --&gt; M2
   GT --&gt; M2
+  m2_s2 --&gt; M2
   G --&gt; M3
   GT --&gt; M3
   G --&gt; M4

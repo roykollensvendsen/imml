@@ -6572,11 +6572,52 @@
   GT(["groundTruth: MarketData"]):::in
   G{{"@guards: Deduplication, StakeWeighting, LivenessCheck"}}:::ov
   M0[["the metric: risk_adjusted_ratio"]]:::hole
+  subgraph sg0 ["spec: submission.excess_return / submission.volatility"]
+    m0_s1(["submission.excess_return"]):::src
+    m0_s2["/"]
+    m0_s3(["submission.volatility"]):::src
+    m0_s1 --&gt; m0_s2
+    m0_s3 --&gt; m0_s2
+  end
   M1[["the metric: risk_adjusted_ratio"]]:::hole
+  subgraph sg1 ["spec: submission.excess_return / submission.volatility"]
+    m1_s1(["submission.excess_return"]):::src
+    m1_s2["/"]
+    m1_s3(["submission.volatility"]):::src
+    m1_s1 --&gt; m1_s2
+    m1_s3 --&gt; m1_s2
+  end
   M2[["the metric: probabilistic_forecast"]]:::hole
+  subgraph sg2 ["spec: score_rule(crps, submission.forecast, groundTrut"]
+    m2_s1(["crps"]):::src
+    m2_s2(["submission.forecast"]):::src
+    m2_s3(["groundTruth.outcome"]):::src
+    m2_s4["score_rule"]
+    m2_s1 --&gt; m2_s4
+    m2_s2 --&gt; m2_s4
+    m2_s3 --&gt; m2_s4
+  end
   M3[["the metric: pnl"]]:::hole
   M4[["the metric: binary_close_above_open"]]:::holex
+  subgraph sg4 ["spec: gate(threshold(submission.close - submission.ope"]
+    m4_s1(["submission.close"]):::src
+    m4_s2["-"]
+    m4_s3(["submission.open"]):::src
+    m4_s4(["0"]):::src
+    m4_s5["threshold"]
+    m4_s6["gate"]
+    m4_s1 --&gt; m4_s2
+    m4_s3 --&gt; m4_s2
+    m4_s2 --&gt; m4_s5
+    m4_s4 --&gt; m4_s5
+    m4_s5 --&gt; m4_s6
+  end
   M5[["the metric: cash_allocation_penalty"]]:::holex
+  subgraph sg5 ["spec: penalty(submission.cash_allocation)"]
+    m5_s1(["submission.cash_allocation"]):::src
+    m5_s2["penalty"]
+    m5_s1 --&gt; m5_s2
+  end
   AGG["aggregate: Proportional"]:::stage
   BURN{{"@burn: redirect a fraction"}}:::ov
   PUB["publish: SetWeights"]:::stage
@@ -6585,16 +6626,21 @@
   SUB --&gt; G
   G --&gt; M0
   GT --&gt; M0
+  m0_s2 --&gt; M0
   G --&gt; M1
   GT --&gt; M1
+  m1_s2 --&gt; M1
   G --&gt; M2
   GT --&gt; M2
+  m2_s4 --&gt; M2
   G --&gt; M3
   GT --&gt; M3
   G --&gt; M4
   GT --&gt; M4
+  m4_s6 --&gt; M4
   G --&gt; M5
   GT --&gt; M5
+  m5_s2 --&gt; M5
   M0 --&gt; AGG
   M1 --&gt; AGG
   M2 --&gt; AGG

@@ -6572,7 +6572,17 @@
   GT(["groundTruth: DeterministicDataset"]):::in
   G{{"@guards: CodeInspection, DeterministicCheck, Deduplication"}}:::ov
   M0[["the metric: accuracy"]]:::hole
+  subgraph sg0 ["spec: rate(submission.correct)"]
+    m0_s1(["submission.correct"]):::src
+    m0_s2["rate"]
+    m0_s1 --&gt; m0_s2
+  end
   M1[["the metric: api_cost_penalty"]]:::holex
+  subgraph sg1 ["spec: penalty(submission.api_cost)"]
+    m1_s1(["submission.api_cost"]):::src
+    m1_s2["penalty"]
+    m1_s1 --&gt; m1_s2
+  end
   AGG["aggregate: WinnerTakeAll"]:::stage
   PUB["publish: SetWeights"]:::stage
   OUT(["weights on-chain = final score"]):::out
@@ -6580,8 +6590,10 @@
   SUB --&gt; G
   G --&gt; M0
   GT --&gt; M0
+  m0_s2 --&gt; M0
   G --&gt; M1
   GT --&gt; M1
+  m1_s2 --&gt; M1
   M0 --&gt; AGG
   M1 --&gt; AGG
   AGG --&gt; PUB

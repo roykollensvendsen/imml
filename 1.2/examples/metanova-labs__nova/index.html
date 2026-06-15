@@ -6572,7 +6572,19 @@
   GT(["groundTruth: ReferenceModel, ReferenceModel"]):::in
   G{{"@guards: CommitReveal, RateLimit, Deduplication"}}:::ov
   M0[["the metric: regression_error"]]:::hole
+  subgraph sg0 ["spec: error(submission.prediction, groundTruth.target)"]
+    m0_s1(["submission.prediction"]):::src
+    m0_s2(["groundTruth.target"]):::src
+    m0_s3["error"]
+    m0_s1 --&gt; m0_s3
+    m0_s2 --&gt; m0_s3
+  end
   M1[["the metric: composite"]]:::hole
+  subgraph sg1 ["spec: mean(submission.components)"]
+    m1_s1(["submission.components"]):::src
+    m1_s2["mean"]
+    m1_s1 --&gt; m1_s2
+  end
   AGG["aggregate: WinnerTakeAll"]:::stage
   BURN{{"@burn: redirect a fraction"}}:::ov
   PUB["publish: SetWeights"]:::stage
@@ -6580,8 +6592,10 @@
   SUB --&gt; G
   G --&gt; M0
   GT --&gt; M0
+  m0_s3 --&gt; M0
   G --&gt; M1
   GT --&gt; M1
+  m1_s2 --&gt; M1
   M0 --&gt; AGG
   M1 --&gt; AGG
   AGG --&gt; BURN

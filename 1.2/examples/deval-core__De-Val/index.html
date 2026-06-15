@@ -6572,14 +6572,77 @@
   GT(["groundTruth: LlmJudgment"]):::in
   G{{"@guards: Deduplication, DeterministicCheck, ChallengePeriod"}}:::ov
   M0[["the metric: regression_error"]]:::hole
+  subgraph sg0 ["spec: error(submission.prediction, groundTruth.target)"]
+    m0_s1(["submission.prediction"]):::src
+    m0_s2(["groundTruth.target"]):::src
+    m0_s3["error"]
+    m0_s1 --&gt; m0_s3
+    m0_s2 --&gt; m0_s3
+  end
   M1[["the metric: similarity"]]:::hole
+  subgraph sg1 ["spec: similarity(submission.output, groundTruth.refere"]
+    m1_s1(["submission.output"]):::src
+    m1_s2(["groundTruth.reference"]):::src
+    m1_s3["similarity"]
+    m1_s1 --&gt; m1_s3
+    m1_s2 --&gt; m1_s3
+  end
   M2[["the metric: similarity"]]:::hole
+  subgraph sg2 ["spec: similarity(submission.output, groundTruth.refere"]
+    m2_s1(["submission.output"]):::src
+    m2_s2(["groundTruth.reference"]):::src
+    m2_s3["similarity"]
+    m2_s1 --&gt; m2_s3
+    m2_s2 --&gt; m2_s3
+  end
   M3[["the metric: similarity"]]:::hole
+  subgraph sg3 ["spec: similarity(submission.output, groundTruth.refere"]
+    m3_s1(["submission.output"]):::src
+    m3_s2(["groundTruth.reference"]):::src
+    m3_s3["similarity"]
+    m3_s1 --&gt; m3_s3
+    m3_s2 --&gt; m3_s3
+  end
   M4[["the metric: regression_error"]]:::hole
+  subgraph sg4 ["spec: error(submission.prediction, groundTruth.target)"]
+    m4_s1(["submission.prediction"]):::src
+    m4_s2(["groundTruth.target"]):::src
+    m4_s3["error"]
+    m4_s1 --&gt; m4_s3
+    m4_s2 --&gt; m4_s3
+  end
   M5[["the metric: regression_error"]]:::hole
+  subgraph sg5 ["spec: error(submission.prediction, groundTruth.target)"]
+    m5_s1(["submission.prediction"]):::src
+    m5_s2(["groundTruth.target"]):::src
+    m5_s3["error"]
+    m5_s1 --&gt; m5_s3
+    m5_s2 --&gt; m5_s3
+  end
   M6[["the metric: similarity"]]:::hole
+  subgraph sg6 ["spec: similarity(submission.output, groundTruth.refere"]
+    m6_s1(["submission.output"]):::src
+    m6_s2(["groundTruth.reference"]):::src
+    m6_s3["similarity"]
+    m6_s1 --&gt; m6_s3
+    m6_s2 --&gt; m6_s3
+  end
   M7[["the metric: similarity"]]:::hole
+  subgraph sg7 ["spec: similarity(submission.output, groundTruth.refere"]
+    m7_s1(["submission.output"]):::src
+    m7_s2(["groundTruth.reference"]):::src
+    m7_s3["similarity"]
+    m7_s1 --&gt; m7_s3
+    m7_s2 --&gt; m7_s3
+  end
   M8[["the metric: similarity"]]:::hole
+  subgraph sg8 ["spec: similarity(submission.output, groundTruth.refere"]
+    m8_s1(["submission.output"]):::src
+    m8_s2(["groundTruth.reference"]):::src
+    m8_s3["similarity"]
+    m8_s1 --&gt; m8_s3
+    m8_s2 --&gt; m8_s3
+  end
   AGG["aggregate: WinnerTakeAll"]:::stage
   SM["smooth: Ema"]:::stage
   PUB["publish: SetWeights"]:::stage
@@ -6588,22 +6651,31 @@
   SUB --&gt; G
   G --&gt; M0
   GT --&gt; M0
+  m0_s3 --&gt; M0
   G --&gt; M1
   GT --&gt; M1
+  m1_s3 --&gt; M1
   G --&gt; M2
   GT --&gt; M2
+  m2_s3 --&gt; M2
   G --&gt; M3
   GT --&gt; M3
+  m3_s3 --&gt; M3
   G --&gt; M4
   GT --&gt; M4
+  m4_s3 --&gt; M4
   G --&gt; M5
   GT --&gt; M5
+  m5_s3 --&gt; M5
   G --&gt; M6
   GT --&gt; M6
+  m6_s3 --&gt; M6
   G --&gt; M7
   GT --&gt; M7
+  m7_s3 --&gt; M7
   G --&gt; M8
   GT --&gt; M8
+  m8_s3 --&gt; M8
   M0 --&gt; AGG
   M1 --&gt; AGG
   M2 --&gt; AGG

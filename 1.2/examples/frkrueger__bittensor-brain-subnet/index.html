@@ -6572,11 +6572,43 @@
   GT(["groundTruth: DeterministicDataset, Other"]):::in
   G{{"@guards: Other"}}:::ov
   M0[["the metric: accuracy"]]:::hole
+  subgraph sg0 ["spec: rate(submission.correct)"]
+    m0_s1(["submission.correct"]):::src
+    m0_s2["rate"]
+    m0_s1 --&gt; m0_s2
+  end
   M1[["the metric: composite"]]:::hole
+  subgraph sg1 ["spec: mean(submission.components)"]
+    m1_s1(["submission.components"]):::src
+    m1_s2["mean"]
+    m1_s1 --&gt; m1_s2
+  end
   M2[["the metric: composite"]]:::hole
+  subgraph sg2 ["spec: mean(submission.components)"]
+    m2_s1(["submission.components"]):::src
+    m2_s2["mean"]
+    m2_s1 --&gt; m2_s2
+  end
   M3[["the metric: similarity"]]:::hole
+  subgraph sg3 ["spec: similarity(submission.output, groundTruth.refere"]
+    m3_s1(["submission.output"]):::src
+    m3_s2(["groundTruth.reference"]):::src
+    m3_s3["similarity"]
+    m3_s1 --&gt; m3_s3
+    m3_s2 --&gt; m3_s3
+  end
   M4[["the metric: composite"]]:::hole
+  subgraph sg4 ["spec: mean(submission.components)"]
+    m4_s1(["submission.components"]):::src
+    m4_s2["mean"]
+    m4_s1 --&gt; m4_s2
+  end
   M5[["the metric: composite"]]:::hole
+  subgraph sg5 ["spec: mean(submission.components)"]
+    m5_s1(["submission.components"]):::src
+    m5_s2["mean"]
+    m5_s1 --&gt; m5_s2
+  end
   AGG["aggregate: WeightedAverage"]:::stage
   SM["smooth: Sma"]:::stage
   PUB["publish: SetWeights"]:::stage
@@ -6585,16 +6617,22 @@
   SUB --&gt; G
   G --&gt; M0
   GT --&gt; M0
+  m0_s2 --&gt; M0
   G --&gt; M1
   GT --&gt; M1
+  m1_s2 --&gt; M1
   G --&gt; M2
   GT --&gt; M2
+  m2_s2 --&gt; M2
   G --&gt; M3
   GT --&gt; M3
+  m3_s3 --&gt; M3
   G --&gt; M4
   GT --&gt; M4
+  m4_s2 --&gt; M4
   G --&gt; M5
   GT --&gt; M5
+  m5_s2 --&gt; M5
   M0 --&gt; AGG
   M1 --&gt; AGG
   M2 --&gt; AGG
