@@ -97,6 +97,38 @@ The **metric** gets the signature purple double-box, because it's the one bespok
 [`extern`](../reference/glossary.md) (or `other`) bespoke leaf it's drawn dashed. Learn these once and you
 can read any subnet in the gallery at a glance.
 
+### The scoring shape — how the pieces combine
+
+The middle of every diagram — how the metrics combine into one score — is drawn from the mechanism's
+**[`composition.shape`](../reference/glossary.md)**, so the topology is graphical, not just the metric. Each
+of the five shapes renders **structurally differently**, and they all stay in the teal *scoring* layer (the
+shape carries the role):
+
+```mermaid
+flowchart LR
+    A1["pipeline<br/>aggregate"]:::stage
+    B1[/"multiplex<br/>split / combine"\]:::comb
+    C1{"gated<br/>pass / fail?"}:::gate
+    D1(("× product")):::op
+    E1["opaque<br/>black box"]:::box
+    classDef stage fill:#e3f6f3,stroke:#2a9d8f,color:#0b3b35;
+    classDef comb fill:#d9f2ee,stroke:#2a9d8f,stroke-width:2px,color:#0b3b35;
+    classDef gate fill:#d9f2ee,stroke:#2a9d8f,stroke-width:2px,color:#0b3b35;
+    classDef op fill:#d9f2ee,stroke:#2a9d8f,stroke-width:2px,color:#0b3b35;
+    classDef box fill:#3a3a4a,stroke:#15151f,stroke-width:2px,color:#f5f5f5;
+```
+
+- **`pipeline`** — the linear flow: metrics fan into a rectangular **aggregate**, then smooth → publish.
+  This is the baseline; the other four are visibly *not* this.
+- **`multiplex`** — the submission is routed into N **parallel tracks** (a *split* trapezoid, labelled by
+  `sub_competitions.structure`) which are merged at an explicit **combine** trapezoid (the funnel).
+- **`gated`** — a pass/fail **gate** (the diamond, named after the gating signal) sits on the aggregated
+  magnitude: `pass` flows on to publish, `fail` drops to a red **`→ 0, no reward`** sink.
+- **`multiplicative`** — an explicit **`× product`** circle: quality × penalties/multipliers, where a single
+  zero zeroes the miner. The penalty/multiplier edges are marked `×`.
+- **`opaque`** — drawn honestly as a single dark **black box** rather than a pretend pipeline: the mechanism
+  is one undocumented [`extern`](../reference/glossary.md), so no metric holes are invented.
+
 ## Which path are you on?
 
 IMML serves three different jobs. Pick the one that matches what you're doing:
