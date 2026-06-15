@@ -622,6 +622,21 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Reading the dataflow diagrams">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-scoring-shape-how-the-pieces-combine" class="md-nav__link">
+    <span class="md-ellipsis">
+      The scoring shape — how the pieces combine
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -6595,6 +6610,21 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Reading the dataflow diagrams">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-scoring-shape-how-the-pieces-combine" class="md-nav__link">
+    <span class="md-ellipsis">
+      The scoring shape — how the pieces combine
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -6760,6 +6790,34 @@ inputs at the top, on-chain weights at the bottom. They all use the same small v
 <a href="../why/">hole</a>. When a metric resolves to a known family it's solid; when it's an
 <a href="../../reference/glossary/"><code>extern</code></a> (or <code>other</code>) bespoke leaf it's drawn dashed. Learn these once and you
 can read any subnet in the gallery at a glance.</p>
+<h3 id="the-scoring-shape-how-the-pieces-combine">The scoring shape — how the pieces combine<a class="headerlink" href="#the-scoring-shape-how-the-pieces-combine" title="Permanent link">&para;</a></h3>
+<p>The middle of every diagram — how the metrics combine into one score — is drawn from the mechanism's
+<strong><a href="../../reference/glossary/"><code>composition.shape</code></a></strong>, so the topology is graphical, not just the metric. Each
+of the five shapes renders <strong>structurally differently</strong>, and they all stay in the teal <em>scoring</em> layer (the
+shape carries the role):</p>
+<pre class="mermaid"><code>flowchart LR
+    A1["pipeline&lt;br/&gt;aggregate"]:::stage
+    B1[/"multiplex&lt;br/&gt;split / combine"\]:::comb
+    C1{"gated&lt;br/&gt;pass / fail?"}:::gate
+    D1(("× product")):::op
+    E1["opaque&lt;br/&gt;black box"]:::box
+    classDef stage fill:#e3f6f3,stroke:#2a9d8f,color:#0b3b35;
+    classDef comb fill:#d9f2ee,stroke:#2a9d8f,stroke-width:2px,color:#0b3b35;
+    classDef gate fill:#d9f2ee,stroke:#2a9d8f,stroke-width:2px,color:#0b3b35;
+    classDef op fill:#d9f2ee,stroke:#2a9d8f,stroke-width:2px,color:#0b3b35;
+    classDef box fill:#3a3a4a,stroke:#15151f,stroke-width:2px,color:#f5f5f5;</code></pre>
+<ul>
+<li><strong><code>pipeline</code></strong> — the linear flow: metrics fan into a rectangular <strong>aggregate</strong>, then smooth → publish.
+  This is the baseline; the other four are visibly <em>not</em> this.</li>
+<li><strong><code>multiplex</code></strong> — the submission is routed into N <strong>parallel tracks</strong> (a <em>split</em> trapezoid, labelled by
+  <code>sub_competitions.structure</code>) which are merged at an explicit <strong>combine</strong> trapezoid (the funnel).</li>
+<li><strong><code>gated</code></strong> — a pass/fail <strong>gate</strong> (the diamond, named after the gating signal) sits on the aggregated
+  magnitude: <code>pass</code> flows on to publish, <code>fail</code> drops to a red <strong><code>→ 0, no reward</code></strong> sink.</li>
+<li><strong><code>multiplicative</code></strong> — an explicit <strong><code>× product</code></strong> circle: quality × penalties/multipliers, where a single
+  zero zeroes the miner. The penalty/multiplier edges are marked <code>×</code>.</li>
+<li><strong><code>opaque</code></strong> — drawn honestly as a single dark <strong>black box</strong> rather than a pretend pipeline: the mechanism
+  is one undocumented <a href="../../reference/glossary/"><code>extern</code></a>, so no metric holes are invented.</li>
+</ul>
 <h2 id="which-path-are-you-on">Which path are you on?<a class="headerlink" href="#which-path-are-you-on" title="Permanent link">&para;</a></h2>
 <p>IMML serves three different jobs. Pick the one that matches what you're doing:</p>
 <pre class="mermaid"><code>flowchart TD

@@ -6571,8 +6571,8 @@
   SUB(["submission"]):::in
   GT(["groundTruth: MarketData"]):::in
   G{{"@guards: Deduplication, RateLimit, DeterministicCheck"}}:::ov
-  M0[["the metric: volume"]]:::hole
   AGG["aggregate: WeightedAverage"]:::stage
+  M0[["the metric: volume"]]:::hole
   SM["smooth: Ema"]:::stage
   BURN{{"@burn: redirect a fraction"}}:::ov
   PUB["publish: SetWeights"]:::stage
@@ -6591,8 +6591,13 @@
   classDef hole fill:#efe3ff,stroke:#7a3cc8,stroke-width:3px,color:#2a1a4a;
   classDef holex fill:#efe3ff,stroke:#7a3cc8,stroke-width:3px,stroke-dasharray:5 3,color:#2a1a4a;
   classDef stage fill:#e3f6f3,stroke:#2a9d8f,color:#0b3b35;
+  classDef comb fill:#d9f2ee,stroke:#2a9d8f,stroke-width:2px,color:#0b3b35;
+  classDef gate fill:#d9f2ee,stroke:#2a9d8f,stroke-width:2px,color:#0b3b35;
+  classDef op fill:#d9f2ee,stroke:#2a9d8f,stroke-width:2px,color:#0b3b35;
+  classDef box fill:#3a3a4a,stroke:#15151f,stroke-width:2px,color:#f5f5f5;
   classDef ov fill:#fff3d6,stroke:#c9a227,color:#5c4a00;
   classDef out fill:#e6ffe6,stroke:#3a3,color:#0a3a0a;
+  classDef zero fill:#fde8e8,stroke:#c0392b,color:#7a1f15;
   classDef note fill:#f3f3f3,stroke:#bbb,color:#333;</code></pre>
 </div>
 <div class="tabbed-block">

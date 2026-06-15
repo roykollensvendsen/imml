@@ -6571,6 +6571,8 @@
   SUB(["submission"]):::in
   GT(["groundTruth: MarketData"]):::in
   G{{"@guards: Deduplication, LivenessCheck, StakeWeighting"}}:::ov
+  SPLIT[/"split into tracks: MultiAsset ×2"\]:::comb
+  COMBINE[\"combine tracks: Proportional"/]:::comb
   M0[["the metric: composite"]]:::hole
   subgraph sg0 ["spec: mean(submission.components)"]
     m0_s1(["submission.components"]):::src
@@ -6602,41 +6604,46 @@
     m3_s2 --&gt; m3_s3
   end
   M4[["the metric: pnl"]]:::hole
-  AGG["aggregate: Proportional"]:::stage
   BURN{{"@burn: redirect a fraction"}}:::ov
   PUB["publish: SetWeights"]:::stage
   OUT(["weights on-chain = final score"]):::out
   ST(["@state: carried across rounds"]):::note
   SUB --&gt; G
-  G --&gt; M0
+  G --&gt; SPLIT
+  SPLIT --&gt; M0
   GT --&gt; M0
   m0_s2 --&gt; M0
-  G --&gt; M1
+  SPLIT --&gt; M1
   GT --&gt; M1
   m1_s2 --&gt; M1
-  G --&gt; M2
+  SPLIT --&gt; M2
   GT --&gt; M2
   m2_s2 --&gt; M2
-  G --&gt; M3
+  SPLIT --&gt; M3
   GT --&gt; M3
   m3_s3 --&gt; M3
-  G --&gt; M4
+  SPLIT --&gt; M4
   GT --&gt; M4
-  M0 --&gt; AGG
-  M1 --&gt; AGG
-  M2 --&gt; AGG
-  M3 --&gt; AGG
-  M4 --&gt; AGG
-  AGG --&gt; BURN
+  M0 --&gt; COMBINE
+  M1 --&gt; COMBINE
+  M2 --&gt; COMBINE
+  M3 --&gt; COMBINE
+  M4 --&gt; COMBINE
+  COMBINE --&gt; BURN
   BURN --&gt; PUB
   PUB --&gt; OUT
-  ST --&gt; AGG
+  ST --&gt; COMBINE
   classDef in fill:#e6f0ff,stroke:#4488cc,color:#102a43;
   classDef hole fill:#efe3ff,stroke:#7a3cc8,stroke-width:3px,color:#2a1a4a;
   classDef holex fill:#efe3ff,stroke:#7a3cc8,stroke-width:3px,stroke-dasharray:5 3,color:#2a1a4a;
   classDef stage fill:#e3f6f3,stroke:#2a9d8f,color:#0b3b35;
+  classDef comb fill:#d9f2ee,stroke:#2a9d8f,stroke-width:2px,color:#0b3b35;
+  classDef gate fill:#d9f2ee,stroke:#2a9d8f,stroke-width:2px,color:#0b3b35;
+  classDef op fill:#d9f2ee,stroke:#2a9d8f,stroke-width:2px,color:#0b3b35;
+  classDef box fill:#3a3a4a,stroke:#15151f,stroke-width:2px,color:#f5f5f5;
   classDef ov fill:#fff3d6,stroke:#c9a227,color:#5c4a00;
   classDef out fill:#e6ffe6,stroke:#3a3,color:#0a3a0a;
+  classDef zero fill:#fde8e8,stroke:#c0392b,color:#7a1f15;
   classDef note fill:#f3f3f3,stroke:#bbb,color:#333;</code></pre>
 </div>
 <div class="tabbed-block">
