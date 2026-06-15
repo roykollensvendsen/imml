@@ -115,9 +115,26 @@ repo is the source of truth; referenced as the `incentive-schema` submodule in `
    0.750→0.746); the validator/miner split is second-order vs stake concentration + the uid tail, and a
    single snapshot is mid-epoch noisy, so the flat dTAO constants (18/41/41) are retained. A multi-epoch
    average might carry signal a snapshot doesn't.)
-5. Full-subnet description — extend the IR to facets (chain_config/architecture/economics/health).
-   `bittensor` is now installed and finney is reachable (`tooling/chain.py` is the adapter), so chain
-   facets are now buildable.
+5. Full-subnet description — an extended language that describes the **whole subnet**, not just the
+   incentive mechanism: extend the IR to facets (chain_config/architecture/economics/health). `bittensor`
+   is installed and finney is reachable (`tooling/chain.py` is the adapter), so chain facets are buildable.
+   Keep the macro/ecosystem layer HERE, not in the IM grammar — the core language stays disciplined to the
+   *mechanism*; this layer makes a subnet's *value* legible, not just its scoring.
+   Concrete content for the **economics/demand facet** (distilled from a design discussion on Bittensor
+   liquidity/competition — the conclusion: the real bottleneck is *legibility*; subnets are a market for
+   lemons, and "better signal" — not "fewer subnets" — is the cure, so a full-subnet language is exactly the
+   instrument to make value legible):
+   - **demand-legibility axis** — derivable TODAY from `ground_truth_sources.kind`: external-demand-grounded
+     (`organic_traffic`, `real_engagement`, `market_data`) vs synthetic/internal (`deterministic_dataset`,
+     `llm_judgment`, `reference_model`). I.e. "is the subnet scored against real demand, or a constructed
+     challenge?" — the cheapest first signal, no new data needed.
+   - **revenue source** — self-emission (subsidy) vs external / cross-subnet payment (real derived demand);
+     and utilization (serving real jobs vs proving idle capacity).
+   - **served market** (workload + buyer) for cross-subnet differentiation / substitutability —
+     `vocab/use-case-tags.yaml` is the first cut at this axis.
+   - **scale / liquidity** — pool depth, validator coverage (from `tooling/chain.py`).
+   Natural but data-blocked follow-on: an *ecosystem-level* simulator (subnets competing for finite external
+   capital + emission — "how many compute subnets is stable?"), distinct from today's intra-subnet sim.
 6. CI hygiene — bump `actions/checkout@v4` → `@v5` and `actions/setup-python@v5` → `@v6` in
    `.github/workflows/{docs,commitlint}.yml` (GitHub deprecated Node 20 for actions as of 2026-06-16;
    they still run forced onto Node 24, but the action versions should be updated). Low priority.
