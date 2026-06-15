@@ -23,6 +23,33 @@ def _lbl(s: str) -> str:
     return str(s).replace('"', "'").replace("\n", " ")
 
 
+# The metric is the typed hole. Its sub-structure lives in three places, in priority order: an authored
+# `extensions.spec` (none in the corpus yet), the bespoke-tail map keyed by `metric_kind_other`, and the
+# named-family map keyed by `metric_kind`. We resolve all three (mirroring simulate._signal_spec) so the
+# gallery's metric box can be opened into its sub-graph for the 20 named kinds + ~85% of the tail — not
+# just the (currently empty) authored-spec case. Kept self-contained: graph.py is a docs concern, and the
+# simulator is deliberately excluded from the published site.
+_ROOT = Path(__file__).resolve().parent.parent
+
+
+def _load(name: str, key: str) -> dict:
+    try:
+        return {r[key]: r["spec"] for r in (yaml.safe_load((_ROOT / "vocab" / name).read_text()) or [])
+                if isinstance(r, dict) and r.get("spec")}
+    except Exception:    # noqa: BLE001 — a missing/garbled vocab file just means no expansion
+        return {}
+
+
+_TAIL = _load("metric-tail-specs.yaml", "raw")
+_KIND = _load("metric-kind-specs.yaml", "kind")
+
+
+def _resolve_spec(sig: dict) -> str | None:
+    return ((sig.get("extensions") or {}).get("spec")
+            or _TAIL.get(sig.get("metric_kind_other"))
+            or _KIND.get(sig.get("metric_kind")))
+
+
 def mechanism_mermaid(ir: dict) -> str:
     comp = ir.get("composition") or {}
     overlays = set(comp.get("overlays") or [])
@@ -55,11 +82,12 @@ def mechanism_mermaid(ir: dict) -> str:
     for i, s in enumerate(signals):
         mid = f"M{i}"
         fam = s.get("metric_family") or s.get("metric_kind") or "other"
-        spec = (s.get("extensions") or {}).get("spec")
-        # the metric is the typed hole — draw it with the signature shape. When it resolves to a known
-        # family/kind (or carries a spec) it's solid; when it's the bespoke escape hatch (`extern` leaf, or
-        # the `other` tail with no spec) it's the same hole drawn dashed.
-        bespoke = s.get("extern") or (fam == "other" and not spec)
+        spec = _resolve_spec(s)
+        # the metric is the typed hole — draw it with the signature shape. Solid when it's a known
+        # family/kind, dashed when it's the bespoke escape hatch (`extern` leaf, or the `other` tail).
+        # The dashed/solid distinction stays honest about *bespoke-ness* and is independent of whether we
+        # can reconstruct a structural spec: a tail metric is still bespoke even once we open its sub-graph.
+        bespoke = s.get("extern") or fam == "other"
         if bespoke:
             desc = _lbl(s.get("metric_kind_other") or ("extern" if s.get("extern") else "other"))
             L.append(f'  {mid}[["the metric: {desc[:44]}"]]:::holex')
@@ -71,10 +99,11 @@ def mechanism_mermaid(ir: dict) -> str:
         if spec:                                  # expand the spec's own dataflow into a subgraph
             try:
                 body, root = metric_spec.to_mermaid(spec, prefix=f"m{i}_")
-                L.append(f'  subgraph sg{i} ["spec: {_lbl(spec[:48])}"]')
-                L.append("  " + body.replace("\n", "\n  "))
-                L.append("  end")
-                E.append((root, mid))
+                if "-->" in body:                 # only open the hole when there's real structure to show;
+                    L.append(f'  subgraph sg{i} ["spec: {_lbl(spec[:48])}"]')   # a bare `submission.x`
+                    L.append("  " + body.replace("\n", "\n  "))                 # projection adds nothing the
+                    L.append("  end")                                          # box label doesn't already say.
+                    E.append((root, mid))
             except Exception:                     # noqa: BLE001 — never let a bad spec break the graph
                 pass
         metric_ids.append(mid)

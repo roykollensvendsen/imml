@@ -54,6 +54,15 @@ Phases complete and committed (see `docs/understand/pipeline.md` — "The full p
   a purple double-box (the hole) — solid when it resolves to a known family, dashed when bespoke
   (`extern`/`other`); aggregate/smooth/publish share one teal pipeline layer; inputs blue, `@overlays` a
   yellow hexagon, on-chain weights green. Legend in `docs/learn/mental-model.md`; verified light + dark.
+  **The hole is now opened.** `graph.py` resolves a metric's spec from `vocab/metric-kind-specs.yaml`
+  (20 named kinds) + `metric-tail-specs.yaml` (75 raws) — not just the (still-empty) authored
+  `extensions.spec` — mirroring `simulate._signal_spec`, and expands it into its sub-dataflow via
+  `metric_spec.to_mermaid`. The dashed/solid distinction stays honest about bespoke-ness (independent of
+  whether a spec resolves: a tail metric is dashed even with its sub-graph drawn). Bare `submission.x`
+  projections are NOT expanded (the box label already names them); anything with a call or binop is.
+  Corpus-wide: **367 metric sub-graphs now drawn across 127/171 subnets (was 0), 0 crashes**, and the
+  built site carries them. (Open side-question: give the abstract anatomy diagram in `mental-model.md` a
+  light colour hint, or keep it deliberately abstract.)
 - **Incentive simulator (chain-grounded, validated)** — a suite, NOT published to the docs site
   (per-subnet "gameable" verdicts are reputationally sensitive). Optional deps in
   `tooling/requirements-sim.txt` (cadCAD + bittensor, now installed in `.venv`).
@@ -141,16 +150,14 @@ repo is the source of truth; referenced as the `incentive-schema` submodule in `
 6. CI hygiene — bump `actions/checkout@v4` → `@v5` and `actions/setup-python@v5` → `@v6` in
    `.github/workflows/{docs,commitlint}.yml` (GitHub deprecated Node 20 for actions as of 2026-06-16;
    they still run forced onto Node 24, but the action versions should be updated). Low priority.
-7. **Graph the metric's internals (active thread — do this next).** Today `graph.py` expands a metric into
-   its sub-dataflow only when the signal carries an authored `extensions.spec`, and **0 corpus signals do**,
-   so in the gallery the metric is always an opaque box. But `vocab/metric-kind-specs.yaml` (20 kinds) +
-   `metric-tail-specs.yaml` (75 raws) hold specs the simulator already resolves (`simulate._signal_spec`:
-   `extensions` → tail → kind). Wire `graph.py` to resolve from vocab too (not just `extensions`) and open
-   the hole into its sub-graph via the existing `metric_spec.to_mermaid` — lights up the metric for the 20
-   kinds + ~85% of the tail. Most specs are shallow (~0.7 generators) so the sub-graphs are small, but even
-   `rate(submission.correct)` beats a bare `accuracy` label. Plan: before/after on a shallow + a composite
-   metric before rolling out to all 189. (Minor side-question: give the abstract anatomy diagram in
-   `mental-model.md` a light colour hint too, or keep it deliberately abstract.)
+7. **Graph the metric's internals — DONE.** `graph.py` now resolves a metric's spec from vocab
+   (`extensions.spec` → `metric-tail-specs.yaml` → `metric-kind-specs.yaml`, via a `_resolve_spec` that
+   mirrors `simulate._signal_spec`) and opens the hole into its sub-dataflow via `metric_spec.to_mermaid`.
+   367 sub-graphs now drawn across 127/171 subnets (was 0), 0 crashes, gates green, built site carries
+   them. Bespoke (`extern`/`other`) metrics stay dashed even when expanded — the dashed/solid border is
+   honest about bespoke-ness, not about whether a spec resolves; bare `submission.x` projections are left
+   collapsed (the box label already names them). Remaining minor side-question (NOT done): give the abstract
+   anatomy diagram in `mental-model.md` a light colour hint too, or keep it deliberately abstract.
 
 Re-running bulk extraction needs the `academia-archives` corpus (not vendored): set
 `ARCHIVES=/path/to/academia-archives/repos` for `tooling/list-pending.sh`. The `extract-corpus` workflow
